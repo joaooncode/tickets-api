@@ -21,7 +21,8 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 // --- Rotas Protegidas (Exigem Token Bearer) ---
 Route::middleware(['auth:sanctum'])->group(function () {
 
-//Logout (Revoga o token)
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+    //Logout (Revoga o token)
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
+    require __DIR__ . '/tickets.php';
 });
