@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAttachmentRequest;
 use App\Models\Attachment;
 use App\Models\Ticket;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -29,12 +29,8 @@ class AttachmentController extends Controller
      *
      * @authenticated
      */
-    public function store(Request $request, Ticket $ticket)
+    public function store(StoreAttachmentRequest $request, Ticket $ticket)
     {
-        $request->validate([
-            'file' => 'required|file|max:10240', // 10MB Max
-        ]);
-
         $file = $request->file('file');
         $path = $file->store('attachments');
 

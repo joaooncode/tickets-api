@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCommentRequest;
+use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Comment;
 use App\Models\Ticket;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -29,15 +30,11 @@ class CommentController extends Controller
      *
      * @authenticated
      */
-    public function store(Request $request, Ticket $ticket)
+    public function store(StoreCommentRequest $request, Ticket $ticket)
     {
-        $request->validate([
-            'body' => 'required|string',
-        ]);
-
         $comment = $ticket->comments()->create([
             'user_id' => Auth::id(),
-            'body' => $request->body,
+            'body' => $request->validated('body'),
         ]);
 
         return response()->json($comment, 201);
@@ -48,17 +45,11 @@ class CommentController extends Controller
      *
      * @authenticated
      */
-    public function update(Request $request, Comment $comment)
+    public function update(UpdateCommentRequest $request, Comment $comment)
     {
         $this->authorize('update', $comment);
 
-        $request->validate([
-            'body' => 'required|string',
-        ]);
-
-        $comment->update([
-            'body' => $request->body,
-        ]);
+        $comment->update($request->validated());
 
         return response()->json($comment);
     }
