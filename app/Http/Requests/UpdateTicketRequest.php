@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\TicketPriority;
+use App\Enums\TicketStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateTicketRequest extends FormRequest
 {
@@ -11,7 +14,7 @@ class UpdateTicketRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +25,10 @@ class UpdateTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => ['sometimes', 'string', 'max:255'],
+            'description' => ['sometimes', 'string'],
+            'priority' => ['sometimes', 'string', Rule::enum(TicketPriority::class)],
+            'status' => ['sometimes', 'string', Rule::enum(TicketStatus::class)],
         ];
     }
 }

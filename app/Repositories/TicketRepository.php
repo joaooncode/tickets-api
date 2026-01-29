@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\TicketStatus;
 use App\Interfaces\ITicketRepository;
 use App\Models\Ticket;
 
@@ -19,9 +20,29 @@ class TicketRepository implements ITicketRepository
             $query->where('user_id', $filters['user_id']);
         }
 
+        if (isset($filters['assigned_to'])) {
+            $query->where('assigned_to', $filters['assigned_to']);
+        }
+
+        if (isset($filters['unassigned']) && $filters['unassigned']) {
+            $query->whereNull('assigned_to');
+        }
+
+        if (isset($filters['search'])) {
+            $query->where(function ($query) use ($filters) {
+                $query->where('title', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('description', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
         // Filtro por status
         if (isset($filters['status'])) {
             $query->where('status', $filters['status']);
+        }
+
+        // Filtro por prioridade
+        if (isset($filters['priority'])) {
+            $query->where('priority', $filters['priority']);
         }
 
         return $query->paginate($perPage);
@@ -50,5 +71,26 @@ class TicketRepository implements ITicketRepository
     public function delete(string $id)
     {
         return Ticket::destroy($id);
+    }
+
+    public function getStats(array $filters = [])
+    {
+        $query = Ticket::query();
+
+        if (isset($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
+        }
+
+        $total = $query->count();
+        $open = $query->clone()->where('status', TicketStatus::OPEN->value)->count();
+        $inProgress = $query->clone()->where('status', TicketStatus::IN_PROGRESS->value)->count();
+        $closed = $query->clone()->where('status', TicketStatus::CLOSE->value)->count();
+
+        return [
+            'total' => $total,
+            'open' => $open,
+            'in_progress' => $inProgress,
+            'closed' => $closed,
+        ];
     }
 }

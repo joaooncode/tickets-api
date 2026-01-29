@@ -3,17 +3,31 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @group Autenticação
+ *
+ * Endpoints para autenticar usuários.
+ */
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Handle an incoming authentication request.
+     * Autentica um usuário e retorna um token de acesso.
+     *
+     * @unauthenticated
+     * @response {
+     *  "access_token": "token",
+     *  "token_type": "Bearer",
+     *  "user": {
+     *      "name": "Test User",
+     *      "email": "test@example.com",
+     *      "uuid": "a-uuid"
+     *  }
+     * }
      */
     public function store(Request $request)
     {
@@ -43,7 +57,9 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Destroy an authenticated session.
+     * Invalida o token de acesso do usuário.
+     *
+     * @authenticated
      */
     public function destroy(Request $request)
     {
