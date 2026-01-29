@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\TicketPriority;
+use App\Enums\TicketStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,6 +18,8 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('assigned_to')->nullable()->constrained('users');
             $table->string('title');
+            $table->string('status')->default(TicketStatus::OPEN->value);
+            $table->string('priority')->default(TicketPriority::LOW->value);
             $table->timestamps();
         });
     }
