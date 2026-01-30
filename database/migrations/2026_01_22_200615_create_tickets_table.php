@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('assigned_to')->nullable()->constrained('users');
             $table->string('title');
+            $table->text('description');
             $table->string('status')->default(TicketStatus::OPEN->value);
             $table->string('priority')->default(TicketPriority::LOW->value);
             $table->timestamps();

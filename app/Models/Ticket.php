@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Ticket extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, Searchable;
 
     protected $fillable = [
         'user_id',
@@ -37,5 +38,19 @@ class Ticket extends Model
     public function attachments()
     {
         return $this->hasMany(Attachment::class);
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'user_id' => $this->user_id,
+            'assigned_to' => $this->assigned_to,
+            'status' => $this->status,
+            'priority' => $this->priority,
+            'created_at' => $this->created_at->timestamp,
+        ];
     }
 }

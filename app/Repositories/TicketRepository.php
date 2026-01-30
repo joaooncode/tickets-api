@@ -11,6 +11,38 @@ class TicketRepository implements ITicketRepository
 
     public function getAll(array $filters = [], int $perPage = 10)
     {
+        if (!empty($filters['search'])) {
+            $query = Ticket::search($filters['search']);
+
+            if (isset($filters['user_id'])) {
+                $query->where('user_id', $filters['user_id']);
+            }
+
+            if (isset($filters['assigned_to'])) {
+                $query->where('assigned_to', $filters['assigned_to']);
+            }
+
+            if (isset($filters['unassigned']) && $filters['unassigned']) {
+                $query->where('assigned_to', null);
+            }
+
+            if (isset($filters['status'])) {
+                $query->where('status', $filters['status']);
+            }
+
+            if (isset($filters['priority'])) {
+                $query->where('priority', $filters['priority']);
+            }
+
+            if (isset($filters['sort_by'])) {
+                $query->orderBy($filters['sort_by'], $filters['sort_direction'] ?? 'asc');
+            }
+
+            $query->query(fn ($q) => $q->with(['user', 'agent']));
+
+            return $query->paginate($perPage);
+        }
+
         $query = Ticket::query()->with(['user', 'agent']);
 
 
@@ -28,13 +60,6 @@ class TicketRepository implements ITicketRepository
             $query->whereNull('assigned_to');
         }
 
-        if (isset($filters['search'])) {
-            $query->where(function ($query) use ($filters) {
-                $query->where('title', 'like', '%' . $filters['search'] . '%')
-                    ->orWhere('description', 'like', '%' . $filters['search'] . '%');
-            });
-        }
-
         // Filtro por status
         if (isset($filters['status'])) {
             $query->where('status', $filters['status']);
@@ -43,6 +68,12 @@ class TicketRepository implements ITicketRepository
         // Filtro por prioridade
         if (isset($filters['priority'])) {
             $query->where('priority', $filters['priority']);
+        }
+
+        if (isset($filters['sort_by'])) {
+            $query->orderBy($filters['sort_by'], $filters['sort_direction'] ?? 'asc');
+        } else {
+            $query->latest();
         }
 
         return $query->paginate($perPage);

@@ -2,135 +2,56 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Services\TicketService;
-use App\Http\Resources\TicketResource;
-use App\Http\Resources\TicketCollection;
-use App\Http\Requests\StoreTicketRequest;
-use App\Http\Requests\UpdateTicketRequest;
+use App\Interfaces\ITicketRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-/**
- * @group Tickets
- *
- * Endpoints para gerenciar tickets.
- */
 class TicketController extends Controller
 {
     public function __construct(
-        protected TicketService $ticketService
-    )
-    {
-    }
+        protected ITicketRepository $ticketRepository
+    ) {}
 
-    /**
-     * Lista todos os tickets.
-     *
-     * @authenticated
-     */
     public function index(Request $request)
     {
-        $tickets = $this->ticketService->listTickets($request->all());
-        return new TicketCollection($tickets);
+        $filters = $request->all();
+
+        if ($request->has('q') && ! $request->has('search')) {
+            $filters['search'] = $request->input('q');
+        }
+
+        return $this->ticketRepository->getAll(
+            $filters,
+            $request->integer('per_page', 10)
+        );
     }
 
-    /**
-     * Lista os tickets do usuário autenticado.
-     *
-     * @authenticated
-     */
-    public function userTickets(Request $request)
+    public function store(Request $request)
     {
-        $tickets = $this->ticketService->listTickets(array_merge($request->all(), ['user_id' => Auth::id()]));
-        return new TicketCollection($tickets);
+        return $this->ticketRepository->create($request->all());
     }
 
-    /**
-     * Lista os tickets atribuídos ao usuário autenticado.
-     *
-     * @authenticated
-     */
-    public function assignedTickets(Request $request)
-    {
-        $tickets = $this->ticketService->listTickets(array_merge($request->all(), ['assigned_to' => Auth::id()]));
-        return new TicketCollection($tickets);
-    }
-
-    /**
-     * Lista os tickets não atribuídos.
-     *
-     * @authenticated
-     */
-    public function unassignedTickets(Request $request)
-    {
-        $tickets = $this->ticketService->listTickets(array_merge($request->all(), ['unassigned' => true]));
-        return new TicketCollection($tickets);
-    }
-
-    /**
-     * Cria um novo ticket.
-     *
-     * @authenticated
-     */
-    public function store(StoreTicketRequest $request)
-    {
-        $ticket = $this->ticketService->createTicket($request->validated());
-        return new TicketResource($ticket);
-    }
-
-    /**
-     * Exibe um ticket específico.
-     *
-     * @authenticated
-     */
     public function show(string $id)
     {
-        $ticket = $this->ticketService->findTicket($id);
-        return new TicketResource($ticket);
+        return $this->ticketRepository->findById($id);
     }
 
-    /**
-     * Atualiza um ticket específico.
-     *
-     * @authenticated
-     */
-    public function update(UpdateTicketRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
-        $ticket = $this->ticketService->updateTicket($id, $request->validated());
-        return new TicketResource($ticket);
+        return $this->ticketRepository->update($id, $request->all());
     }
 
-    /**
-     * Deleta um ticket específico.
-     *
-     * @authenticated
-     */
     public function destroy(string $id)
     {
-        $this->ticketService->deleteTicket($id);
-        return response()->json(null, 204);
+        return $this->ticketRepository->delete($id);
     }
 
-    /**
-     * Atribui um ticket a um usuário.
-     *
-     * @authenticated
-     */
-    public function assign(Request $request, string $ticketId, string $userId)
+    public function assign(string $ticket, string $user)
     {
-        $ticket = $this->ticketService->assignTicket($ticketId, $userId);
-        return new TicketResource($ticket);
+        return $this->ticketRepository->update($ticket, ['assigned_to' => $user]);
     }
 
-    /**
-     * Altera o status de um ticket.
-     *
-     * @authenticated
-     */
-    public function changeStatus(Request $request, string $ticketId)
+    public function changeStatus(Request $request, string $ticket)
     {
-        $ticket = $this->ticketService->changeTicketStatus($ticketId, $request->input('status'));
-        return new TicketResource($ticket);
+        return $this->ticketRepository->update($ticket, ['status' => $request->input('status')]);
     }
 }
