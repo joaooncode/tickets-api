@@ -17,11 +17,13 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
 
 
 // 2. Login (Valida credenciais e devolve token)
-Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+Route::middleware(['throttle:auth_login'])->group(function () {
+    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+});
 
 
 // --- Rotas Protegidas (Exigem Token Bearer) ---
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
 
     //Logout (Revoga o token)
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
