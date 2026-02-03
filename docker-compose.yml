@@ -1,0 +1,74 @@
+services:
+  # 1. Aplicação Laravel
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel-app
+    container_name: app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www # Sincroniza código local com container (bom para dev)
+    networks:
+      - laravel-network
+    depends_on:
+      - db
+      - typesense
+
+  # 2. Servidor Web (Nginx)
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80" # Acessível em http://localhost:8000
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - laravel-network
+    depends_on:
+      - app
+
+  # 3. Banco de Dados (Postgres)
+  db:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Para acessar via software externo (DBeaver, etc)
+    networks:
+      - laravel-network
+
+  # 4. Busca (Typesense)
+  typesense:
+    image: typesense/typesense:26.0
+    container_name: typesense
+    restart: always
+    environment:
+      - TYPESENSE_DATA_DIR=/data
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
+      - TYPESENSE_ENABLE_CORS=true
+    volumes:
+      - tsdata:/data
+    ports:
+      - "8108:8108"
+    networks:
+      - laravel-network
+
+# Volumes persistentes (para dados não sumirem ao reiniciar)
+volumes:
+  pgdata:
+  tsdata:
+
+# Rede interna para os containers conversarem
+networks:
+  laravel-network:
+    driver: bridge
