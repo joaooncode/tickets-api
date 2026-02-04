@@ -13,12 +13,12 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 
 Route::post('/register', [RegisteredUserController::class, 'store'])
-    ->name('register');
+    ->name('api.register');
 
 
 // 2. Login (Valida credenciais e devolve token)
 Route::middleware(['throttle:auth_login'])->group(function () {
-    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+    Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('api.login');
 });
 
 
