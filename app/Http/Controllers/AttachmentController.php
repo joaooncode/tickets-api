@@ -32,7 +32,7 @@ class AttachmentController extends Controller
     public function store(StoreAttachmentRequest $request, Ticket $ticket)
     {
         $file = $request->file('file');
-        $path = $file->store('attachments');
+        $path = $file->store('attachments', 's3');
 
         $attachment = $ticket->attachments()->create([
             'file_path' => $path,
@@ -51,7 +51,7 @@ class AttachmentController extends Controller
      */
     public function show(Attachment $attachment)
     {
-        return Storage::download($attachment->file_path, $attachment->file_name);
+        return Storage::disk('s3')->download($attachment->file_path, $attachment->file_name);
     }
 
     /**
@@ -61,7 +61,7 @@ class AttachmentController extends Controller
      */
     public function destroy(Attachment $attachment)
     {
-        Storage::delete($attachment->file_path);
+        Storage::disk('s3')->delete($attachment->file_path);
         $attachment->delete();
 
         return response()->json(null, 204);
