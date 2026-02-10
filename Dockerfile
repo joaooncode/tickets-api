@@ -39,6 +39,8 @@ RUN mkdir -p /var/www/storage/framework/sessions \
     && mkdir -p /var/www/storage/logs \
     && mkdir -p /var/www/bootstrap/cache
 
+RUN chown -R www-data:www-data /var/www
+
 # 9. Define o Entrypoint e o comando padrão
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["php-fpm"]
