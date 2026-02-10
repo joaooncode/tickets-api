@@ -34,5 +34,8 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'clerk' => [
+        'public_key' => env('CLERK_PUBLIC_KEY'),
+    ],
 
 ];

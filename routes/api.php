@@ -7,7 +7,7 @@ use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
+Route::middleware(\App\Http\Middleware\ClerkAuthenticate::class)->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -23,7 +23,7 @@ Route::middleware(['throttle:auth_login'])->group(function () {
 
 
 // --- Rotas Protegidas (Exigem Token Bearer) ---
-Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
+Route::middleware([\App\Http\Middleware\ClerkAuthenticate::class, 'throttle:api'])->group(function () {
 
     //Logout (Revoga o token)
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
@@ -35,7 +35,7 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     require __DIR__ . '/comments.php';
     require __DIR__ . '/attachments.php';
 
-    Route::middleware(['admin'])->group(function () {
+    Route::middleware([\App\Http\Middleware\ClerkAuthenticate::class])->group(function () {
         Route::get('/stats', [StatsController::class, 'index']);
         require __DIR__ . '/tickets.php';
     });

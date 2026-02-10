@@ -53,4 +53,9 @@ class Ticket extends Model
             'created_at' => $this->created_at->timestamp,
         ];
     }
+    public function assignedTo()
+    {
+        // O técnico responsável
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
 }

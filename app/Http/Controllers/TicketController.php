@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\ITicketRepository;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @group Tickets
@@ -119,5 +121,49 @@ class TicketController extends Controller
     public function changeStatus(Request $request, string $ticket)
     {
         return $this->ticketRepository->update($ticket, ['status' => $request->input('status')]);
+    }
+
+    public function userTickets()
+    {
+        $user = Auth::user();
+
+        // Retorna os tickets onde o user_id é o do usuário logado
+        $tickets = Ticket::where('user_id', $user->id)
+            ->with('attachments') // Eager loading para performance
+            ->latest()
+            ->paginate(10);
+
+        return response()->json($tickets);
+    }
+
+    /**
+     * Retorna os tickets atribuídos ao técnico/agente logado
+     */
+    public function assignedTickets()
+    {
+        $user = Auth::user();
+
+        // Filtra tickets onde o campo 'assigned_to' (ID do técnico) é o do usuário logado
+        $tickets = Ticket::where('assigned_to', $user->id)
+            ->with(['user', 'attachments'])
+            ->latest()
+            ->paginate(10);
+
+        return response()->json($tickets);
+    }
+
+    /**
+     * Retorna todos os tickets que ainda não foram atribuídos a ninguém
+     * (Geralmente usado por administradores/agentes para "puxar" tickets)
+     */
+    public function unassignedTickets()
+    {
+        // Apenas tickets onde assigned_to é nulo
+        $tickets = Ticket::whereNull('assigned_to')
+            ->with('user')
+            ->latest()
+            ->paginate(10);
+
+        return response()->json($tickets);
     }
 }
