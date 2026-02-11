@@ -22,10 +22,19 @@ if [ ! -d "/var/www/vendor" ]; then
     composer install --no-interaction --optimize-autoloader
 fi
 
-# 5. Limpa caches para garantir que mudanças no .env (S3/Clerk) sejam lidas
+# 5. Copia o código para o volume compartilhado com o Nginx
+# O Nginx precisa acessar os arquivos estáticos (public/) e o index.php
+if [ -d "/var/www_shared" ]; then
+    echo "Sincronizando arquivos para o volume compartilhado..."
+    # Usamos rsync para sincronizar, excluindo storage e vendor se necessário, mas aqui queremos tudo
+    # A opção -a preserva permissões e -v é verbose
+    rsync -a --delete /var/www/ /var/www_shared/
+fi
+
+# 6. Limpa caches para garantir que mudanças no .env (S3/Clerk) sejam lidas
 php artisan config:clear
 php artisan cache:clear
 
-# 6. Inicia o PHP-FPM
+# 7. Inicia o PHP-FPM
 echo "Ambiente pronto! Iniciando PHP-FPM..."
 exec php-fpm

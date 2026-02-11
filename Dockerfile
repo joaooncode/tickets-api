@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libpq-dev \
+    rsync \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # 3. Instala extensões do PHP
@@ -22,25 +23,24 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # 5. Define diretório de trabalho
 WORKDIR /var/www
 
-# 6. Copia os arquivos do projeto (para a imagem de produção)
+# 6. Copia os arquivos do projeto
 COPY . .
 
-# 7. Configuração do Entrypoint
-# Copia o script para uma pasta do sistema (fora do volume /var/www para garantir que existe)
-COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+# 7. Instala dependências do PHP
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Dá permissão de execução
+# 8. Configuração do Entrypoint
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# 8. Cria as pastas necessárias (Separado linha por linha para evitar erros de shell)
+# 9. Cria as pastas necessárias e ajusta permissões
 RUN mkdir -p /var/www/storage/framework/sessions \
     && mkdir -p /var/www/storage/framework/views \
     && mkdir -p /var/www/storage/framework/cache \
     && mkdir -p /var/www/storage/logs \
-    && mkdir -p /var/www/bootstrap/cache
+    && mkdir -p /var/www/bootstrap/cache \
+    && chown -R www-data:www-data /var/www
 
-RUN chown -R www-data:www-data /var/www
-
-# 9. Define o Entrypoint e o comando padrão
+# 10. Define o Entrypoint e o comando padrão
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["php-fpm"]
