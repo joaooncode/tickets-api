@@ -1,11 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClockIcon, CheckIcon, Loader2Icon, ChartBarIcon, CalendarIcon, MessageSquareIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const statuses = [
@@ -131,44 +130,64 @@ const chamados = [
 ]
 
 export default function Dashboard() {
-    const handleClick = (status: typeof statuses[0]) => {
-        console.log(
-            {
-                status: status.label,
-                total: status.value
-            });
+    const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
+    const router = useRouter()
+
+    const statusesWithCount = useMemo(() => statuses.map((s) => ({
+        ...s,
+        value: s.label === "Total"
+            ? chamados.length
+            : chamados.filter((c) => c.status === s.label).length
+    })), [])
+
+    const filteredChamados = useMemo(() => {
+        if (selectedStatus === null || selectedStatus === "Total") {
+            return chamados
+        }
+        return chamados.filter((c) => c.status === selectedStatus)
+    }, [selectedStatus])
+
+    const handleClick = (status: (typeof statuses)[0]) => {
+        setSelectedStatus(status.label === "Total" ? null : status.label)
     }
-    const router = useRouter();
     return (
         <>
             <div className="flex flex-col items-start w-full">
                 <h1 className="text-4xl font-bold">Dashboard</h1>
                 <div className="grid grid-cols-4 gap-4 mt-4 w-full mb-8">
-                    {statuses.map((status) => (
-                        <Card
-                            key={status.label}
-                            className="w-full cursor-pointer transition-shadow hover:shadow-lg"
-                            onClick={() => handleClick(status)}
-                        >
-                            <CardContent>
-                                <div className="flex items-center gap-4">
-                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${status.color}`}>
-                                        {status.icon}
+                    {statusesWithCount.map((status) => {
+                        const isSelected =
+                            (status.label === "Total" && selectedStatus === null) ||
+                            selectedStatus === status.label
+                        return (
+                            <Card
+                                key={status.label}
+                                className={cn(
+                                    "w-full cursor-pointer transition-shadow hover:shadow-lg",
+                                    isSelected && "ring-2 ring-primary shadow-md"
+                                )}
+                                onClick={() => handleClick(status)}
+                            >
+                                <CardContent>
+                                    <div className="flex items-center gap-4">
+                                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${status.color}`}>
+                                            {status.icon}
+                                        </div>
+                                        <div className="flex flex-col justify-between">
+                                            <p className="text-lg font-bold">{status.value}</p>
+                                            <h2 className="text-sm text-muted-foreground">{status.label}</h2>
+                                        </div>
                                     </div>
-                                    <div className="flex flex-col justify-between">
-                                        <p className="text-lg font-bold">{status.value}</p>
-                                        <h2 className="text-sm text-muted-foreground">{status.label}</h2>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
+                                </CardContent>
+                            </Card>
+                        )
+                    })}
                 </div>
                 <div className="mb-4">
                     <h2 className="text-2xl font-bold">Recentes</h2>
                 </div>
                 <div className="flex flex-col gap-4 w-full">
-                    {chamados.map((chamado) => (
+                    {filteredChamados.map((chamado) => (
                         <Card key={chamado.id} className="w-full cursor-pointer transition-shadow hover:shadow-lg" onClick={() => router.push(`/t/tickets/${chamado.id}`)}>
                             <CardHeader>
                                 <div className="flex justify-between items-start gap-2 w-full">
