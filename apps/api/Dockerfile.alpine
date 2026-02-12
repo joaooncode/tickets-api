@@ -1,0 +1,38 @@
+# --- Estágio 1: Build das dependências (Composer) ---
+FROM composer:latest AS vendor-stage
+WORKDIR /app
+COPY composer.json composer.lock ./
+# Instalamos sem scripts para não rodar o artisan antes da hora
+RUN composer install --no-dev --no-interaction --no-scripts --optimize-autoloader
+
+# --- Estágio 2: Imagem Final de Produção ---
+FROM php:8.4-fpm-alpine
+
+# Instala dependências do sistema e extensões em um único comando para evitar camadas extras
+RUN apk add --no-cache \
+    libpng-dev \
+    libxml2-dev \
+    libzip-dev \
+    oniguruma-dev \
+    postgresql-dev \
+    rsync \
+    icu-dev \
+    && docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd intl opcache
+
+WORKDIR /var/www
+
+# Copia apenas o que importa do estágio de build
+COPY --from=vendor-stage /app/vendor ./vendor
+
+# Copia o código do projeto
+COPY . .
+
+# Copia o Entrypoint e remove o rsync do sistema se não for mais usar (opcional)
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Permissões rápidas (Alpine usa IDs diferentes, mas www-data existe)
+RUN chown -R www-data:www-data /var/www
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["php-fpm"]

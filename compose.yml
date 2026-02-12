@@ -1,0 +1,80 @@
+services:
+  # 1. Aplicação Laravel
+  api:
+    image: senac-tickets:api-v0.1.0
+    restart: unless-stopped
+    working_dir: /var/www
+    env_file:
+      - ./apps/api/.env
+    volumes:
+      - app_data:/var/www_shared
+    networks:
+      - laravel-network
+    depends_on:
+      - db
+      - typesense
+  # web:
+  #   image: matheusgollmann/senac-tickets:web-v0.1.0
+  #   container_name: web
+  #   restart: unless-stopped
+  #   env_file:
+  #     - ./apps/web/.env
+  #   networks:
+  #     - laravel-network
+  #   depends_on:
+  #     - api
+  #     - nginx
+
+  # 2. Servidor Web (Nginx)
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "8000:80" # Acessível em http://localhost:8000
+    volumes:
+      - app_data:/var/www:ro
+      - ./apps/api/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - laravel-network
+    depends_on:
+      - api
+
+  # 3. Banco de Dados (Postgres)
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    env_file:
+      - ./apps/api/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Para acessar via software externo (DBeaver, etc)
+    networks:
+      - laravel-network
+
+  # 4. Busca (Typesense)
+  typesense:
+    image: typesense/typesense:26.0
+    restart: always
+    environment:
+      - TYPESENSE_DATA_DIR=/data
+      - TYPESENSE_ENABLE_CORS=true
+    env_file:
+      - ./apps/api/.env
+    volumes:
+      - tsdata:/data
+    ports:
+      - "8108:8108"
+    networks:
+      - laravel-network
+
+# Volumes persistentes (para dados não sumirem ao reiniciar)
+volumes:
+  pgdata:
+  tsdata:
+  app_data:
+
+    # Rede interna para os containers conversarem
+networks:
+  laravel-network:
+    driver: bridge
