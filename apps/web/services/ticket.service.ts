@@ -1,7 +1,8 @@
 import { getAuthHeaders } from "@/lib/api";
 import { Ticket, TicketStatus } from "@/lib/types";
-import type { CreateCommentError, FetchError, UpdateTicketStatusError } from "@/lib/errors";
+import type { CreateCommentError, CreateTicketError, FetchError, UpdateTicketStatusError } from "@/lib/errors";
 import { ok, err, Result } from "neverthrow";
+import { CreateTicketData } from "@/lib/schemas";
 
 
 export const ticketService = {
@@ -47,6 +48,13 @@ export const ticketService = {
             return ok([]);
         } catch (error) {
             return err({ type: 'UNKNOWN_ERROR', message: 'An unknown error occurred while fetching the ticket statuses' });
+        }
+    },
+    async createTicket(ticket: CreateTicketData): Promise<Result<true, CreateTicketError>> {
+        try {
+            return ok(true);
+        } catch (error) {
+            return err({ type: 'UNKNOWN_ERROR', message: 'An unknown error occurred while creating the ticket' });
         }
     },
     async updateTicketStatus(ticketId: string, status: TicketStatus): Promise<Result<true, UpdateTicketStatusError>> {
