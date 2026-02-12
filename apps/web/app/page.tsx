@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignOutButton } from "@clerk/nextjs";
 
-export default function HomePage() {
+export default async function HomePage() {
 
   return (
     <div className="flex flex-row gap-4 justify-center mt-16">
@@ -19,7 +19,6 @@ export default function HomePage() {
           <Button variant="outline">Logout</Button>
         </SignOutButton>
       </SignedIn>
-
     </div>
   )
 }
