@@ -1,7 +1,7 @@
 services:
   # 1. Aplicação Laravel
   api:
-    image: joaosilvadev25/tickets-api-senac:api-v0.1.0
+    image: joaosilvadev25/tickets-api-senac:api-v0.2.0
     restart: unless-stopped
     working_dir: /var/www
     env_file:
