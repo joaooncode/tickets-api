@@ -13,16 +13,27 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::firstOrCreate([
-            'name' => 'Matheus',
-            'email' => 'gollmannmatheus@gmail.com',
-            'isAdmin' => true,
-            'clerk_id' => 'user_39JnGLH6vnxXc9y6nsk9hPLWJTv',
-        ], [
-            'name' => 'João',
-            'email' => 'joao.vitor.r.silva.dev@gmail.com',
-            'isAdmin' => true,
-            'clerk_id' => 'user_39XyFWdos84WOmtrf2nzZDOTMJS',
-        ]);
+        public function run(): void
+            {
+                // Cria ou encontra o Matheus
+                User::firstOrCreate(
+                    ['email' => 'gollmannmatheus@gmail.com'], // Único por email
+                    [
+                        'name' => 'Matheus',
+                        'isAdmin' => true,
+                        'clerk_id' => 'user_39JnGLH6vnxXc9y6nsk9hPLWJTv',
+                    ]
+                );
+
+                // Cria ou encontra o João
+                User::firstOrCreate(
+                    ['email' => 'joao.vitor.r.silva.dev@gmail.com'],
+                    [
+                        'name' => 'João',
+                        'isAdmin' => true,
+                        'clerk_id' => 'user_39XyFWdos84WOmtrf2nzZDOTMJS',
+                    ]
+                );
+            }
     }
 }
