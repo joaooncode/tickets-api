@@ -13,8 +13,8 @@ const links = [
         href: "/t/dashboard"
     },
     {
-        label: "Novo Chamado",
-        href: "/t/tickets/new"
+        label: "Meus Chamados",
+        href: "/t/tickets"
     },
     {
         label: "Perfil",

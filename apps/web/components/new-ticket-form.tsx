@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
-import { createNewTicket } from "@/app/_actions";
+import { createTicket } from "@/app/_actions";
 import { Priority } from "@/lib/types";
 import { createTicketSchema, CreateTicketData } from "@/lib/schemas";
 import { toast } from "sonner";
@@ -37,15 +37,17 @@ export function NewTicketForm() {
     const onSubmit: SubmitHandler<CreateTicketData> = async (data) => {
         try {
             console.log("data", data)
-            const result = await createNewTicket(data)
+            const result = await createTicket(data)
 
-            if (!result.success) {
-                toast.error("Ocorreu um erro ao criar ticket")
+            if (result.success === false) {
+                console.error("error creating ticket", result.error)
+                toast.error(result.error?.message ?? "Ocorreu um erro ao criar ticket")
                 return
             }
 
-            toast.success(result.message)
-        } catch {
+            toast.success("Ticket criado com sucesso")
+        } catch (error) {
+            console.error("error creating ticket", error)
             toast.error("Ocorreu um erro ao criar ticket")
         }
     }
