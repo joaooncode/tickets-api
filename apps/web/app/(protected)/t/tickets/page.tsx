@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
+import TicketsList from "@/components/tickets-list";
 
 export default function TicketsPage() {
     return (
@@ -13,6 +14,9 @@ export default function TicketsPage() {
                         Novo Chamado
                     </Button>
                 </Link>
+                <div className="flex flex-col gap-4 w-full">
+                    <TicketsList />
+                </div>
             </div>
         </>
     )
