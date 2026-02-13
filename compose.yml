@@ -45,6 +45,10 @@ services:
     restart: unless-stopped
     env_file:
       - ./apps/api/.env
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=helpdesk_api
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
