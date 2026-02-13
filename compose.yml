@@ -48,9 +48,34 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432" # Para acessar via software externo (DBeaver, etc)
+      - "5432:5432"
     networks:
       - laravel-network
+
+  db-prisma:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    env_file:
+      - ./apps/web/.env
+    volumes:
+      - prisma-pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - laravel-network
+
+  migration:
+    image: matheusgollmann/senac-tickets:web-v0.1.0
+    restart: unless-stopped
+    env_file:
+      - ./apps/api/.env
+    volumes:
+      - app_data:/var/www
+    networks:
+      - laravel-network
+    depends_on:
+      - db-prisma
+    command: [ "npx", "prisma", "migrate", "deploy" ]
 
   # 4. Busca (Typesense)
   typesense:
@@ -71,6 +96,7 @@ services:
 # Volumes persistentes (para dados não sumirem ao reiniciar)
 volumes:
   pgdata:
+  prisma-pgdata:
   tsdata:
   app_data:
 

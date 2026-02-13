@@ -15,16 +15,10 @@ import { createTicketSchema, CreateTicketData } from "@/lib/schemas";
 import { toast } from "sonner";
 import { InputImageDropzone } from "@/components/dropzone";
 
-import { useUser } from '@clerk/nextjs'
-
-
 export function NewTicketForm() {
-    const { user } = useUser()
-    console.log("user", user?.id)
     const form = useForm<CreateTicketData>({
         resolver: zodResolver(createTicketSchema),
         defaultValues: {
-            createdBy: user?.id ?? "",
             category: "",
             title: "",
             description: "",
@@ -51,8 +45,6 @@ export function NewTicketForm() {
             toast.error("Ocorreu um erro ao criar ticket")
         }
     }
-
-
 
     return (
         <form onSubmit={form.handleSubmit(onSubmit)}>

@@ -1,83 +1,122 @@
-import { getAuthHeaders } from "@/lib/api";
-import { Ticket, TicketStatus } from "@/lib/types";
-import type { CreateCommentError, CreateTicketError, FetchError, UpdateTicketStatusError } from "@/lib/errors";
-import { ok, err, Result } from "neverthrow";
-import { CreateTicketData } from "@/lib/schemas";
+import { prisma } from '@/lib/prisma'
+import { Prisma } from '@/prisma/generated/prisma/client'
+import type { Ticket } from '@/prisma/generated/prisma/client'
+import { TicketStatus } from '@/prisma/generated/prisma/client'
+import type { PrismaError } from '@/lib/prisma-errors'
+import { CreateTicketData } from '@/lib/schemas'
+import { err, ok, Result } from 'neverthrow'
 
+function getErrorMessage(error: unknown, fallback: string): string {
+    return error instanceof Error ? error.message : fallback
+}
 
 export const ticketService = {
-    async getAllTickets(): Promise<Result<Ticket[], FetchError>> {
+    async getAllTickets(): Promise<Result<Ticket[], PrismaError>> {
         try {
-            const headers = await getAuthHeaders()
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tickets`,
-                {
-                    headers,
-                }
-            )
+            const tickets = await prisma.ticket.findMany({
+                orderBy: { createdAt: 'desc' },
+            })
+            return ok(tickets)
+        } catch (error) {
+            return err({
+                type: 'UNKNOWN',
+                message: getErrorMessage(error, 'Erro desconhecido ao acessar dados'),
+            })
+        }
+    },
 
-            if (res.status === 404) {
-                return err({ type: 'NOT_FOUND', message: 'No tickets found' });
+    async getUserTickets(userId: string): Promise<Result<Ticket[], PrismaError>> {
+        try {
+            const tickets = await prisma.ticket.findMany({
+                where: { userId },
+                orderBy: { createdAt: 'desc' },
+            })
+            return ok(tickets)
+        } catch (error) {
+            return err({
+                type: 'UNKNOWN',
+                message: getErrorMessage(error, 'Erro desconhecido ao acessar dados'),
+            })
+        }
+    },
+
+    async getAllTicketsStatuses(): Promise<
+        Result<TicketStatus[], PrismaError>
+    > {
+        try {
+            const statuses = Object.values(TicketStatus) as TicketStatus[]
+            return ok(statuses)
+        } catch (error) {
+            return err({
+                type: 'UNKNOWN',
+                message: getErrorMessage(error, 'Erro desconhecido ao acessar dados'),
+            })
+        }
+    },
+
+    async createTicket(
+        data: CreateTicketData,
+        clerkUserId: string,
+    ): Promise<Result<true, PrismaError>> {
+        try {
+            const createData: Prisma.TicketUncheckedCreateInput = {
+                userId: clerkUserId,
+                title: data.title,
+                description: data.description,
+                status: TicketStatus.OPEN,
             }
+            await prisma.ticket.create({ data: createData })
+            return ok(true)
+        } catch (error) {
+            return err({
+                type: 'UNKNOWN',
+                message: getErrorMessage(error, 'Erro desconhecido ao criar ticket'),
+            })
+        }
+    },
 
-            if (!res.ok) {
-                return err({ type: 'FETCH_ERROR', message: 'Failed to fetch tickets' });
-            }
+    async updateTicketStatus(
+        ticketId: string,
+        status: TicketStatus,
+    ): Promise<Result<true, PrismaError>> {
+        try {
+            await prisma.ticket.update({
+                where: { id: ticketId },
+                data: { status },
+            })
+            return ok(true)
+        } catch (error) {
+            return err({
+                type: 'UNKNOWN',
+                message: getErrorMessage(
+                    error,
+                    'Erro desconhecido ao atualizar status do ticket',
+                ),
+            })
+        }
+    },
 
-            const data: Ticket[] = await res.json();
-            return ok(data);
+    /**
+     * Cria um comentário no ticket. O caller deve passar o userId do usuário autenticado.
+     */
+    async createComment(
+        ticketId: string,
+        userId: string,
+        content: string,
+    ): Promise<Result<true, PrismaError>> {
+        try {
+            await prisma.comment.create({
+                data: { ticketId, userId, content },
+            })
+            return ok(true)
         } catch (error) {
-            return err({ type: 'UNKNOWN_ERROR', message: 'An unknown error occurred while fetching tickets' });
+            return err({
+                type: 'UNKNOWN',
+                message: getErrorMessage(
+                    error,
+                    'Erro desconhecido ao criar comentário',
+                ),
+            })
         }
     },
-    async getUserTickets(userId: string): Promise<Result<Ticket[], FetchError>> {
-        try {
-            const headers = await getAuthHeaders()
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/${userId}/tickets`,
-                {
-                    headers,
-                }
-            )
-
-            return ok([]);
-        } catch (error) {
-            return err({ type: 'UNKNOWN_ERROR', message: 'An unknown error occurred while fetching the user tickets' });
-        }
-    },
-    async getAllTicketsStatuses(): Promise<Result<TicketStatus[], FetchError>> {
-        try {
-            return ok([]);
-        } catch (error) {
-            return err({ type: 'UNKNOWN_ERROR', message: 'An unknown error occurred while fetching the ticket statuses' });
-        }
-    },
-    async createTicket(ticket: CreateTicketData): Promise<Result<true, CreateTicketError>> {
-        try {
-            return ok(true);
-        } catch (error) {
-            return err({ type: 'UNKNOWN_ERROR', message: 'An unknown error occurred while creating the ticket' });
-        }
-    },
-    async updateTicketStatus(ticketId: string, status: TicketStatus): Promise<Result<true, UpdateTicketStatusError>> {
-        try {
-            return ok(true);
-        } catch (error) {
-            return err({ type: 'UNKNOWN_ERROR', message: 'An unknown error occurred while updating the ticket status' });
-        }
-    },
-    async createComment(ticketId: string, comment: string): Promise<Result<true, CreateCommentError>> {
-        try {
-            const headers = await getAuthHeaders()
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tickets/${ticketId}/comments`,
-                {
-                    headers,
-                    method: "POST",
-                    body: JSON.stringify({ comment }),
-                }
-            )
-
-            return ok(true);
-        } catch (error) {
-            return err({ type: 'UNKNOWN_ERROR', message: 'An unknown error occurred while creating the comment' });
-        }
-    }
 }

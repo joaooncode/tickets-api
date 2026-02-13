@@ -1,4 +1,7 @@
 export type CreateTicketError = {
+    type: "UNAUTHORIZED";
+    message: string;
+} | {
     type: "UNKNOWN_ERROR";
     message: string;
 }

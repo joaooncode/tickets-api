@@ -1,4 +1,4 @@
-import { ticketService } from '@/services/ticket.service'
+import { ticketService } from '@/services/old-ticket.service'
 import { ListStatus } from '@/components/list-status'
 import { ListTickets } from '@/components/list-tickets'
 

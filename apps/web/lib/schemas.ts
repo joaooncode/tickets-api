@@ -2,7 +2,6 @@ import { z } from "zod";
 import { Priority } from "./types";
 
 export const createTicketSchema = z.object({
-    createdBy: z.string("Usuário é obrigatório"),
     category: z.string()
         .min(1, "Categoria é obrigatória")
         .max(100, "Categoria precisa ter no máximo 100 caracteres"),

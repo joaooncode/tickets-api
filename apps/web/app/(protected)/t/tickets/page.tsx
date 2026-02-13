@@ -2,8 +2,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import TicketsList from "@/components/tickets-list";
+import { auth } from "@clerk/nextjs/server";
 
-export default function TicketsPage() {
+export default async function TicketsPage() {
+    const { userId } = await auth()
     return (
         <>
             <div className="flex flex-col gap-4 w-full h-full">
@@ -15,7 +17,7 @@ export default function TicketsPage() {
                     </Button>
                 </Link>
                 <div className="flex flex-col gap-4 w-full">
-                    <TicketsList />
+                    <TicketsList userId={userId ? userId : ''} />
                 </div>
             </div>
         </>

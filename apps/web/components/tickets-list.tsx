@@ -1,8 +1,8 @@
 import TicketCard from "@/components/ticket-card";
-import { getTickets } from "@/services/ticket.service";
+import { ticketService } from "@/services/old-ticket.service";
 
-export default async function TicketsList() {
-    const tickets = await getTickets()
+export default async function TicketsList({ userId }: { userId: string }) {
+    const tickets = await ticketService.getUserTickets(userId)
     if (tickets.isErr()) {
         if (tickets.error.type === 'NOT_FOUND') {
             return <div>Você ainda não possui nenhum chamado</div>
