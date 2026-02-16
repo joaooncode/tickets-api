@@ -93,7 +93,10 @@ class TicketRepository implements ITicketRepository
 
     public function create(array $data): Ticket
     {
-        return Ticket::create($data);
+        $allowed = ['user_id', 'assigned_to', 'title', 'description', 'priority', 'status'];
+        $filtered = array_intersect_key($data, array_flip($allowed));
+
+        return Ticket::create($filtered);
     }
 
     public function update(string $id, array $data): Ticket

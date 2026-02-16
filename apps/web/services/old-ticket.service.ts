@@ -9,7 +9,7 @@ export const ticketService = {
     async getAllTickets(): Promise<Result<Ticket[], FetchError>> {
         try {
             const headers = await getAuthHeaders()
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tickets`,
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tickets`,
                 {
                     headers,
                 }
@@ -24,6 +24,7 @@ export const ticketService = {
             }
 
             const data: Ticket[] = await res.json();
+            console.log("(old-ticket.service.getAllTickets) Tickets", data)
             return ok(data);
         } catch (error) {
             return err({ type: 'UNKNOWN_ERROR', message: 'An unknown error occurred while fetching tickets' });
@@ -52,8 +53,21 @@ export const ticketService = {
     },
     async createTicket(ticket: CreateTicketData): Promise<Result<true, CreateTicketError>> {
         try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tickets`, {
+                method: "POST",
+                headers: {
+                    ...(await getAuthHeaders()),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(ticket),
+            })
+            if (!res.ok) {
+                console.error("(old-ticket.service.createTicket) Failed to create ticket", res.json())
+                return err({ type: 'UNKNOWN_ERROR', message: 'Failed to create ticket' });
+            }
             return ok(true);
         } catch (error) {
+            console.error("(old-ticket.service.createTicket) An unknown error occurred while creating the ticket", error)
             return err({ type: 'UNKNOWN_ERROR', message: 'An unknown error occurred while creating the ticket' });
         }
     },

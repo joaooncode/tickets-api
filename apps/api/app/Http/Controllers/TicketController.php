@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTicketRequest;
 use App\Interfaces\ITicketRepository;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
@@ -52,9 +53,12 @@ class TicketController extends Controller
      * @bodyParam description string required A descrição detalhada do problema. Example: Não consigo acessar minha conta.
      * @bodyParam priority string A prioridade do ticket (low, medium, high, critical). Example: high
      */
-    public function store(Request $request)
+    public function store(StoreTicketRequest $request)
     {
-        return $this->ticketRepository->create($request->all());
+        $data = $request->validated();
+        $data['user_id'] = Auth::id();
+
+        return $this->ticketRepository->create($data);
     }
 
     /**

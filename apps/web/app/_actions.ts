@@ -2,7 +2,7 @@
 
 import { CreateTicketData } from "@/lib/schemas"
 import type { CreateTicketError, FetchError } from "@/lib/errors"
-import { ticketService } from "@/services/ticket.service"
+import { ticketService } from "@/services/old-ticket.service"
 import { auth } from "@clerk/nextjs/server"
 import { Result, ok, err } from "neverthrow"
 import { Ticket } from "@/prisma/generated/prisma/client"
@@ -19,7 +19,7 @@ export async function createTicket(ticket: CreateTicketData): Promise<{ success:
                 }
             }
         }
-        const res = await ticketService.createTicket(ticket, userId)
+        const res = await ticketService.createTicket(ticket)
 
         if (res.isErr()) {
             return {
