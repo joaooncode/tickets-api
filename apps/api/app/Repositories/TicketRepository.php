@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Enums\TicketStatus;
 use App\Interfaces\ITicketRepository;
 use App\Models\Ticket;
+use App\Http\Resources\TicketResource;
 
 class TicketRepository implements ITicketRepository
 {
@@ -80,7 +81,12 @@ class TicketRepository implements ITicketRepository
 
     }
 
-    public function findById(string $id): ?Ticket
+    public function findById(string $id): \App\Http\Resources\TicketResource
+    {
+        return new TicketResource($this->getModelById($id));
+    }
+    
+    private function getModelById(string $id): Ticket
     {
         return Ticket::with(['user', 'agent', 'comments'])->findOrFail($id);
     }
@@ -92,7 +98,7 @@ class TicketRepository implements ITicketRepository
 
     public function update(string $id, array $data): Ticket
     {
-        $ticket = $this->findById($id);
+        $ticket = $this->getModelById($id);
 
         $ticket->update($data);
 
