@@ -21,7 +21,7 @@ function formatCreatedAt(createdAt: number): string {
 export default function TicketCard({ ticket }: { ticket: Ticket }) {
 	const router = useRouter()
 	const createdAtFormatted = formatCreatedAt(ticket.created_at)
-	const commentsCount = 0
+	const commentsCount = ticket.comments_count
 
 	function handleClick() {
 		router.push(`/t/tickets/${ticket.id}`)
@@ -53,7 +53,7 @@ export default function TicketCard({ ticket }: { ticket: Ticket }) {
 						<div className="flex gap-2 items-center">
 							<MessageSquareIcon className="w-4 h-4 text-muted-foreground" />
 							<span className="text-sm text-muted-foreground">
-								{commentsCount}
+								{commentsCount} comentário{commentsCount !== 1 ? 's' : ''}
 							</span>
 						</div>
 					</div>

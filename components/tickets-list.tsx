@@ -10,6 +10,7 @@ function toTicketCardTicket(t: {
 	assignedToId: string | null
 	status: string
 	createdAt: Date
+	comments: unknown[]
 }): Ticket {
 	return {
 		id: t.id,
@@ -20,6 +21,7 @@ function toTicketCardTicket(t: {
 		status: t.status,
 		priority: "Normal",
 		created_at: t.createdAt.getTime(),
+		comments_count: t.comments?.length ?? 0,
 	}
 }
 

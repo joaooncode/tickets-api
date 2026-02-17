@@ -9,6 +9,7 @@ export type Ticket = {
     status: string;
     priority: string;
     created_at: number;
+    comments_count: number;
 };
 
 export enum Priority {
