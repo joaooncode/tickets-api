@@ -169,6 +169,18 @@ export async function getTicketById(
 				error: "Você precisa estar logado para continuar.",
 			}
 		}
+		const internalUserId = await getInternalUserId(userId)
+		if (!internalUserId) {
+			console.error(
+				"[getTicketById] User não encontrado para clerkUserId",
+				userId,
+			)
+			return {
+				success: false,
+				data: null,
+				error: "Usuário não encontrado. Faça login novamente.",
+			}
+		}
 		const res = await ticketService.getTicketById(ticketId)
 		if (res.isErr()) {
 			console.error("[getTicketById] Erro do service", res.error)
@@ -176,6 +188,17 @@ export async function getTicketById(
 				success: false,
 				data: null,
 				error: toUserMessage(res.error),
+			}
+		}
+		const ticket = res.value
+		const isCreator = ticket.userId === internalUserId
+		const isAssigned = ticket.assignedToId === internalUserId
+		if (!isCreator && !isAssigned) {
+			console.error("[getTicketById] Usuário sem permissão para este ticket")
+			return {
+				success: false,
+				data: null,
+				error: toUserMessage({ type: "UNAUTHORIZED", message: "" }),
 			}
 		}
 		console.log("[getTicketById] Sucesso", res.value.id)
@@ -327,11 +350,29 @@ export async function updateTicketStatus(
 	}
 }
 
+const COMMENT_CONTENT_MIN = 1
+const COMMENT_CONTENT_MAX = 1000
+
 export async function createComment(
 	ticketId: string,
 	content: string,
 ): Promise<ActionResult<Comment>> {
 	try {
+		const trimmed = content.trim()
+		if (trimmed.length < COMMENT_CONTENT_MIN) {
+			return {
+				success: false,
+				data: null,
+				error: "Comentário não pode estar vazio.",
+			}
+		}
+		if (trimmed.length > COMMENT_CONTENT_MAX) {
+			return {
+				success: false,
+				data: null,
+				error: `Comentário deve ter no máximo ${COMMENT_CONTENT_MAX} caracteres.`,
+			}
+		}
 		const { userId } = await auth()
 		if (!userId) {
 			console.error("[createComment] Usuário não autenticado")
@@ -356,7 +397,7 @@ export async function createComment(
 		const res = await ticketService.createComment(
 			ticketId,
 			internalUserId,
-			content,
+			trimmed,
 		)
 		if (res.isErr()) {
 			console.error("[createComment] Erro do service", res.error)
