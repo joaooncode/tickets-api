@@ -9,11 +9,12 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
-import { createTicket } from "@/app/_actions";
+import { createTicket } from "@/app/(actions)/userActions";
 import { Priority } from "@/lib/types";
 import { createTicketSchema, CreateTicketData } from "@/lib/schemas";
 import { toast } from "sonner";
 import { InputImageDropzone } from "@/components/dropzone";
+import { useRouter } from "next/navigation";
 
 export function NewTicketForm() {
     const form = useForm<CreateTicketData>({
@@ -28,6 +29,8 @@ export function NewTicketForm() {
         mode: "onBlur",
     })
 
+    const router = useRouter()
+
     const onSubmit: SubmitHandler<CreateTicketData> = async (data) => {
         try {
             console.log("data", data)
@@ -39,7 +42,11 @@ export function NewTicketForm() {
                 return
             }
 
+            const createdTicketId = result.data
+
             toast.success("Ticket criado com sucesso")
+
+            router.push(`/t/tickets/${createdTicketId}`)
         } catch (error) {
             console.error("error creating ticket", error)
             toast.error("Ocorreu um erro ao criar ticket")

@@ -5,8 +5,7 @@ const STATUS_LABELS = [
 	{ label: 'Total', color: 'bg-gray-100' },
 	{ label: 'Em aberto', color: 'bg-blue-100' },
 	{ label: 'Em andamento', color: 'bg-yellow-100' },
-	{ label: 'Aguardando sua resposta', color: 'bg-orange-100' },
-	{ label: 'Finalizado', color: 'bg-green-100' }
+	{ label: 'Resolvido', color: 'bg-green-100' }
 ] as const
 
 export interface ListStatusProps {

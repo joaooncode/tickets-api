@@ -6,7 +6,7 @@ export default function NewTicketPage() {
     return (
         <>
             <div className="flex flex-col gap-4 w-full h-full">
-                <GoBackButton href="/t/tickets" />
+                <GoBackButton href="/t/dashboard" />
                 <Card className="w-full mx-auto max-w-3xl pb-8">
                     <CardHeader>
                         <CardTitle>

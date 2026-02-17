@@ -1,60 +1,69 @@
 import { ok, err, type Result } from 'neverthrow'
 import { prisma } from '@/lib/prisma'
-import type { Ticket, Comment } from '@/prisma/generated/prisma/client'
 import { TicketStatus } from '@/prisma/generated/prisma/client'
-import type { Prisma } from '@/prisma/generated/prisma/client'
 import type {
-	GetAllTicketsError,
-	GetTicketByIdError,
-	GetAssignedTicketsByUserIdError,
-	GetCreatedTicketsByUserIdError,
-	CreateTicketError,
-	UpdateTicketStatusError,
-	CreateCommentError,
+	GET_ALL_TICKETS_ERROR,
+	GET_TICKET_BY_ID_ERROR,
+	GET_CREATED_TICKETS_BY_USER_ID_ERROR,
+	CREATE_TICKET_ERROR,
+	UPDATE_TICKET_STATUS_ERROR,
+	CREATE_COMMENT_ERROR,
 } from '@/lib/errors'
-
-const ticketInclude = {
-	user: true,
-	assignedTo: true,
-	comments: { include: { user: true } },
-} as const
-
-type TicketWithRelations = Prisma.TicketGetPayload<{
-	include: typeof ticketInclude
-}>
-
-const VALID_STATUSES: string[] = Object.values(TicketStatus)
-
-function isTicketStatus(value: string): value is TicketStatus {
-	return VALID_STATUSES.includes(value)
-}
+import type { CreateTicketData } from '@/lib/schemas'
+import type { TicketWithRelations } from '@/lib/types'
 
 export const ticketService = {
-	async getAllTickets(): Promise<
-		Result<TicketWithRelations[], GetAllTicketsError>
-	> {
+	/**
+	 * Fetches all tickets from the database (REQUIRE ADMIN ROLE)
+	 * @returns a Result<TicketWithRelations[], GetAllTicketsError>
+	 */
+	async getAllTickets(
+		status?: TicketStatus
+	): Promise<Result<TicketWithRelations[], GET_ALL_TICKETS_ERROR>> {
 		try {
 			const tickets = await prisma.ticket.findMany({
-				include: ticketInclude,
+				where: { status },
+				include: {
+					user: true,
+					assignedTo: true,
+					comments: { include: { user: true } },
+				},
 			})
+
+			if (!tickets) {
+				return err({ type: 'NOT_FOUND', message: 'Tickets not found' })
+			}
+
 			return ok(tickets)
+
 		} catch (e) {
 			const message = e instanceof Error ? e.message : 'Unknown error'
 			return err({ type: 'FETCH_ERROR', message })
 		}
 	},
-
+	/**
+	 * Fetches a ticket by its ID
+	 * REQUIRE ADMIN ROLE OR THE USER ITSELF
+	 * @param ticketId - The ticket's ID
+	 * @returns a Result<TicketWithRelations, GetTicketByIdError>
+	 */
 	async getTicketById(
 		ticketId: string,
-	): Promise<Result<TicketWithRelations, GetTicketByIdError>> {
+	): Promise<Result<TicketWithRelations, GET_TICKET_BY_ID_ERROR>> {
 		try {
 			const ticket = await prisma.ticket.findUnique({
 				where: { id: ticketId },
-				include: ticketInclude,
+				include: {
+					user: true,
+					assignedTo: true,
+					comments: { include: { user: true } },
+				},
 			})
+
 			if (!ticket) {
 				return err({ type: 'NOT_FOUND', message: 'Ticket not found' })
 			}
+
 			return ok(ticket)
 		} catch (e) {
 			const message = e instanceof Error ? e.message : 'Unknown error'
@@ -62,122 +71,122 @@ export const ticketService = {
 		}
 	},
 
-	async getAssignedTicketsByUserId(
+	/**
+	 * Fetches all tickets created by a user
+	 * @param userId - The user's internal ID
+	 * @returns a Result<TicketWithRelations[], GetCreatedTicketsByUserIdError>
+	 */
+	async getUserTickets(
 		userId: string,
-	): Promise<
-		Result<TicketWithRelations[], GetAssignedTicketsByUserIdError>
-	> {
+		status?: TicketStatus,
+	): Promise<Result<TicketWithRelations[], GET_CREATED_TICKETS_BY_USER_ID_ERROR>> {
 		try {
-			const user = await prisma.user.findUnique({
-				where: { id: userId },
+			const userTickets = await prisma.ticket.findMany({
+				where: { userId, status },
+				include: {
+					user: true,
+					assignedTo: true,
+					comments: { include: { user: true } },
+				},
 			})
-			if (!user) {
+
+			if (!userTickets) {
 				return err({ type: 'USER_NOT_FOUND', message: 'User not found' })
 			}
-			const tickets = await prisma.ticket.findMany({
-				where: { assignedToId: userId },
-				include: ticketInclude,
-			})
-			return ok(tickets)
+
+			return ok(userTickets)
 		} catch (e) {
-			const message = e instanceof Error ? e.message : 'Unknown error'
-			return err({ type: 'FETCH_ERROR', message })
+			console.log("[getCreatedTicketsByUserId] Exceção", e)
+			return err({ type: 'FETCH_ERROR', message: "Erro ao buscar tickets criados pelo usuário" })
 		}
 	},
 
-	async getCreatedTicketsByUserId(
-		userId: string,
-	): Promise<
-		Result<TicketWithRelations[], GetCreatedTicketsByUserIdError>
-	> {
-		try {
-			const user = await prisma.user.findUnique({
-				where: { id: userId },
-			})
-			if (!user) {
-				return err({ type: 'USER_NOT_FOUND', message: 'User not found' })
-			}
-			const tickets = await prisma.ticket.findMany({
-				where: { userId },
-				include: ticketInclude,
-			})
-			return ok(tickets)
-		} catch (e) {
-			const message = e instanceof Error ? e.message : 'Unknown error'
-			return err({ type: 'FETCH_ERROR', message })
-		}
-	},
-
+	/**
+	 * Creates a new ticket
+	 * @param userId - The user's internal ID
+	 * @param CreateTicketData - The schema for the ticket
+	 * @returns a Result<Ticket, CreateTicketError>
+	 */
 	async createTicket(
 		userId: string,
-		title: string,
-		description: string,
-	): Promise<Result<Ticket, CreateTicketError>> {
+		data: CreateTicketData,
+	): Promise<Result<string, CREATE_TICKET_ERROR>> {
 		try {
 			const ticket = await prisma.ticket.create({
-				data: { userId, title, description },
+				data: { userId, ...data },
 			})
-			return ok(ticket)
+
+			if (!ticket) {
+				return err({ type: 'CREATE_ERROR', message: 'Erro ao criar ticket' })
+			}
+
+			return ok(ticket.id)
 		} catch (e) {
 			const message = e instanceof Error ? e.message : 'Unknown error'
 			return err({ type: 'UNKNOWN_ERROR', message })
 		}
 	},
 
+	/**
+	 * Updates the status of a ticket (REQUIRE ADMIN ROLE)
+	 * @param ticketId - The ticket's ID
+	 * @param status - The new status
+	 * @returns a Result<true, UPDATE_TICKET_STATUS_ERROR>
+	 */
 	async updateTicketStatus(
 		ticketId: string,
-		status: string,
-	): Promise<Result<Ticket, UpdateTicketStatusError>> {
-		if (!isTicketStatus(status)) {
-			return err({
-				type: 'INVALID_STATUS',
-				message: `Invalid status: ${status}`,
-			})
-		}
+		status: TicketStatus,
+	): Promise<Result<true, UPDATE_TICKET_STATUS_ERROR>> {
 		try {
 			const ticket = await prisma.ticket.findUnique({
 				where: { id: ticketId },
 			})
+
 			if (!ticket) {
 				return err({ type: 'NOT_FOUND', message: 'Ticket not found' })
 			}
+
 			const updated = await prisma.ticket.update({
 				where: { id: ticketId },
 				data: { status },
 			})
-			return ok(updated)
+
+			if (!updated) {
+				return err({ type: 'UPDATE_ERROR', message: 'Failed to update ticket status' })
+			}
+
+			return ok(true)
 		} catch (e) {
-			const message = e instanceof Error ? e.message : 'Unknown error'
-			return err({ type: 'UNKNOWN_ERROR', message })
+			console.log("[updateTicketStatus] Exceção", e)
+			return err({ type: 'UNKNOWN_ERROR', message: "Erro ao atualizar o status do ticket" })
 		}
 	},
 
+	/**
+	 * Creates a new comment
+	 * @param ticketId - The ticket's ID
+	 * @param userId - The user's internal ID
+	 * @param content - The comment's content
+	 * @returns a Result<true, CREATE_COMMENT_ERROR>
+	 */
 	async createComment(
 		ticketId: string,
 		userId: string,
 		content: string,
-	): Promise<Result<Comment, CreateCommentError>> {
+	): Promise<Result<true, CREATE_COMMENT_ERROR>> {
 		try {
-			const [ticket, user] = await Promise.all([
-				prisma.ticket.findUnique({ where: { id: ticketId } }),
-				prisma.user.findUnique({ where: { id: userId } }),
-			])
-			if (!ticket) {
-				return err({
-					type: 'TICKET_NOT_FOUND',
-					message: 'Ticket not found',
-				})
-			}
-			if (!user) {
-				return err({ type: 'USER_NOT_FOUND', message: 'User not found' })
-			}
 			const comment = await prisma.comment.create({
 				data: { ticketId, userId, content },
 			})
-			return ok(comment)
+
+			if (!comment) {
+				return err({ type: 'CREATE_ERROR', message: 'Failed to create comment' })
+			}
+
+			return ok(true)
 		} catch (e) {
-			const message = e instanceof Error ? e.message : 'Unknown error'
-			return err({ type: 'UNKNOWN_ERROR', message })
+			console.log("[createComment] Exceção", e)
+			return err({ type: 'UNKNOWN_ERROR', message: "Erro ao criar o comentário" })
 		}
 	},
 }

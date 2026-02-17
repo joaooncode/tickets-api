@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeftIcon, CalendarIcon, UserIcon } from 'lucide-react'
-import { getTicketById } from '@/app/_actions'
+import { getCurrentUserTicketById } from '@/app/(actions)/userActions'
 import { TicketStatusBadge } from '@/components/status-badge'
 import { TicketCommentForm } from './ticket-comment-form'
 import type { TicketStatus } from '@/prisma/generated/prisma/client'
@@ -31,29 +31,22 @@ function statusToLabel(status: TicketStatus): string {
 	}
 }
 
-interface TicketPageProps {
-	params: Promise<{ id: string }>
-}
-
-export default async function TicketPage({ params }: TicketPageProps) {
+export default async function TicketPage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params
-	const result = await getTicketById(id)
+	const result = await getCurrentUserTicketById(id)
 
-	if (!result.success) {
-		if (result.error === 'Ticket não encontrado.' || result.error === 'Você não tem permissão para esta ação.') {
-			notFound()
-		}
+	if (!result.success || !result.data) {
 		return (
 			<div className="flex flex-col gap-4 w-full items-center">
 				<div className="w-full max-w-2xl flex flex-col gap-2 items-start">
-					<Link href="/t/tickets">
+					<Link href="/t/dashboard">
 						<Button variant="outline" className="cursor-pointer">
 							<ArrowLeftIcon />
 							Voltar
 						</Button>
 					</Link>
 					<p className="text-destructive" role="alert">
-						{result.error}
+						Ticket não encontrado ou você não tem permissão para acessá-lo.
 					</p>
 				</div>
 			</div>
@@ -61,6 +54,7 @@ export default async function TicketPage({ params }: TicketPageProps) {
 	}
 
 	const ticket = result.data
+
 	const sortedComments = [...ticket.comments].sort(
 		(a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
 	)
@@ -68,7 +62,7 @@ export default async function TicketPage({ params }: TicketPageProps) {
 	return (
 		<div className="flex flex-col gap-4 w-full items-center">
 			<div className="w-full max-w-2xl flex flex-col gap-2 items-start">
-				<Link href="/t/tickets">
+				<Link href="/t/dashboard">
 					<Button variant="outline" className="cursor-pointer">
 						<ArrowLeftIcon />
 						Voltar

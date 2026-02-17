@@ -1,4 +1,4 @@
-import { getAllTickets } from '@/app/_actions'
+import { getCreatedTicketsByUserId } from '@/app/(actions)/_actions'
 import { ListStatus } from '@/components/list-status'
 import { ListTickets } from '@/components/list-tickets'
 import type { Ticket } from '@/lib/types'
@@ -11,6 +11,7 @@ function toTicket(t: {
     assignedToId: string | null
     status: string
     createdAt: Date
+    comments?: unknown[]
 }): Ticket {
     return {
         id: t.id,
@@ -21,6 +22,7 @@ function toTicket(t: {
         status: t.status,
         priority: 'Normal',
         created_at: t.createdAt.getTime(),
+        comments_count: t.comments?.length ?? 0,
     }
 }
 
@@ -35,7 +37,7 @@ export default async function Dashboard({ searchParams }: DashboardPageProps) {
             : searchParams
     const statusFilter = resolvedParams?.status ?? null
 
-    const result = await getAllTickets()
+    const result = await getCreatedTicketsByUserId()
 
     if (!result.success) {
         return (
@@ -60,7 +62,7 @@ export default async function Dashboard({ searchParams }: DashboardPageProps) {
             <h1 className="text-4xl font-bold">Dashboard</h1>
             <ListStatus tickets={tickets} currentStatus={statusFilter} />
             <div className="mb-4">
-                <h2 className="text-2xl font-bold">Recentes</h2>
+                <h2 className="text-2xl font-bold">Meus chamados</h2>
             </div>
             <ListTickets tickets={filteredTickets} />
         </div>

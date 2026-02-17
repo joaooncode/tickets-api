@@ -6,7 +6,7 @@ import { SignOutButton } from "@clerk/nextjs";
 import { UserButtonClient } from "@/components/user-button-client";
 import { Suspense } from "react";
 import { currentUser } from "@clerk/nextjs/server"
-import { getCurrentUserRole } from "@/app/_actions"
+import { getCurrentUserRole } from "@/app/(actions)/userActions"
 import { UserRole } from "@/prisma/generated/prisma/client"
 
 const links = [
@@ -15,8 +15,8 @@ const links = [
         href: "/t/dashboard"
     },
     {
-        label: "Meus Chamados",
-        href: "/t/tickets"
+        label: "Criar Chamado",
+        href: "/t/tickets/new"
     },
     {
         label: "Perfil",
@@ -27,6 +27,14 @@ const links = [
 
 const adminLinks = [
     {
+        label: "Dashboard",
+        href: "/admin/dashboard"
+    },
+    {
+        label: "Chamados",
+        href: "/admin/tickets"
+    },
+    {
         label: "Usuarios",
         href: "/admin/usuarios"
     }
@@ -34,9 +42,9 @@ const adminLinks = [
 
 
 export default async function Header() {
-	const user = await currentUser()
-	const role = await getCurrentUserRole()
-	const isAdmin = role === UserRole.ADMIN
+    const user = await currentUser()
+    const role = await getCurrentUserRole()
+    const isAdmin = role === UserRole.ADMIN
 
     return (
         <>
@@ -47,12 +55,11 @@ export default async function Header() {
                 </div>
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-2 mr-8">
-                        {links.map((link) => (
+                        {isAdmin ? adminLinks.map((link) => (
                             <Link href={link.href} key={link.label}>
                                 <Button variant="link" className="cursor-pointer">{link.label}</Button>
                             </Link>
-                        ))}
-                        {isAdmin && adminLinks.map((link) => (
+                        )) : links.map((link) => (
                             <Link href={link.href} key={link.label}>
                                 <Button variant="link" className="cursor-pointer">{link.label}</Button>
                             </Link>

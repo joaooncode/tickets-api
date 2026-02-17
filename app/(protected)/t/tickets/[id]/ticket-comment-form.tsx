@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { SendIcon } from 'lucide-react'
-import { createComment } from '@/app/_actions'
+import { createComment } from '@/app/(actions)/_actions'
 
 const COMMENT_MAX_LENGTH = 1000
 

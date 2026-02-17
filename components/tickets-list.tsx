@@ -1,6 +1,6 @@
 import TicketCard from "@/components/ticket-card"
 import type { Ticket } from "@/lib/types"
-import { getCreatedTicketsByUserId } from "@/app/_actions"
+import { getCreatedTicketsByUserId } from "@/app/(actions)/_actions"
 
 function toTicketCardTicket(t: {
 	id: string
