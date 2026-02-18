@@ -11,7 +11,7 @@ import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
 import { createTicket } from "@/app/(actions)/userActions";
 import { TicketPriority } from "@/prisma/generated/prisma/browser";
-import { createTicketSchema, CreateTicketData } from "@/lib/schemas";
+import { createTicketSchema, CreateTicketData, MAX_ATTACHMENT_BYTES } from "@/lib/schemas";
 import { toast } from "sonner";
 import { InputImageDropzone } from "@/components/dropzone";
 import { useRouter } from "next/navigation";
@@ -176,10 +176,11 @@ export function NewTicketForm() {
                                 value={field.value ?? []}
                                 onChange={field.onChange}
                                 maxFiles={5}
+                                maxSize={MAX_ATTACHMENT_BYTES}
                             />
 
                             <FieldDescription>
-                                Você pode enviar até 5 anexos, cada um com até 10MB.
+                                Você pode enviar até 5 anexos, cada um com até 1MB.
                             </FieldDescription>
 
                             {fieldState.invalid && (

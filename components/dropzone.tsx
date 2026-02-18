@@ -9,7 +9,8 @@ import { toast } from "sonner"
 type Props = {
     value: File[]
     onChange: (files: File[]) => void
-    maxFiles?: number,
+    maxFiles?: number
+    maxSize?: number
     extensions?: string[]
 }
 
@@ -17,7 +18,8 @@ export function InputImageDropzone({
     value,
     onChange,
     maxFiles = 5,
-    extensions = ["jpg", "jpeg", "png",],
+    maxSize,
+    extensions = ["jpg", "jpeg", "png"],
 }: Props) {
     const inputRef = useRef<HTMLInputElement>(null)
 
@@ -30,24 +32,25 @@ export function InputImageDropzone({
         const allowed = extensions.map(e => e.toLowerCase())
 
         const validFiles = Array.from(selected).filter(file => {
-            console.log("file", file)
-            // 1️⃣ MIME
             if (!file.type.startsWith("image/") || !isAllowedExtension(file, allowed)) {
                 toast.error(`Arquivo ${file.name} não é uma imagem JPG, JPEG ou PNG`)
                 return false
             }
-
+            if (maxSize != null && file.size > maxSize) {
+                toast.error(`Arquivo ${file.name} excede o limite de 1MB`)
+                return false
+            }
             return true
         })
 
-        const rejected = Array.from(selected).filter(file => {
+        const rejectedByType = Array.from(selected).filter(file => {
             if (!file.type.startsWith("image/")) return true
             if (!isAllowedExtension(file, allowed)) return true
+            if (maxSize != null && file.size > maxSize) return true
             return false
         })
 
-        if (rejected.length > 0) {
-            console.log("rejected", rejected)
+        if (rejectedByType.length > 0) {
             return
         }
 
@@ -86,6 +89,7 @@ export function InputImageDropzone({
                 </p>
                 <p className="text-xs text-muted-foreground">
                     Máx: {maxFiles} arquivos
+                    {maxSize != null && ", 1MB por arquivo"}
                 </p>
                 <p className="text-xs text-muted-foreground">
                     {files.length} arquivos selecionados

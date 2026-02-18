@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { TicketPriority } from "@/prisma/generated/prisma/browser";
 
+/** Tamanho máximo por anexo (1MB) em bytes */
+export const MAX_ATTACHMENT_BYTES = 1024 * 1024;
+
 export const createTicketSchema = z.object({
     category: z.string()
         .min(1, "Categoria é obrigatória")
@@ -23,7 +26,10 @@ export const createTicketSchema = z.object({
                 }),
             "Apenas imagens JPG, JPEG ou PNG"
         )
-
+        .refine(
+            files => files.every(file => file.size <= MAX_ATTACHMENT_BYTES),
+            "Cada anexo deve ter no máximo 1MB"
+        ),
 })
 
 export type CreateTicketData = z.infer<typeof createTicketSchema>
