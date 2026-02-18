@@ -1,6 +1,7 @@
 import { getAllTickets } from '@/app/(actions)/adminActions'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import TicketCategoryChart from './ticket-category-chart'
+import TicketPriorityChart from './ticket-priority-chart'
 import TicketStatusChart from './ticket-status-chart'
 import TicketsOpenedThisWeekCard from './tickets-opened-this-week'
 
@@ -18,6 +19,9 @@ export default async function AdminDashboardPage() {
                         </div>
                         <div className="col-span-2">
                             <TicketCategoryChart tickets={tickets.data ?? []} />
+                        </div>
+                        <div className="col-span-1">
+                            <TicketPriorityChart tickets={tickets.data ?? []} />
                         </div>
                         <div className="col-span-1">
                             <TicketsOpenedThisWeekCard tickets={tickets.data ?? []} />

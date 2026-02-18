@@ -1,5 +1,6 @@
 'use client'
 
+import type { TicketPriority } from '@/prisma/generated/prisma/client'
 import {
 	Chart as ChartJS,
 	ArcElement,
@@ -11,36 +12,36 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
-const CATEGORY_COLORS = [
-	'rgb(147, 197, 253)',
-	'rgb(254, 240, 138)',
-	'rgb(134, 239, 172)',
-	'rgb(216, 180, 254)',
-	'rgb(251, 207, 232)',
-	'rgb(165, 243, 252)',
-	'rgb(254, 215, 170)',
-	'rgb(203, 213, 225)',
-]
-
-interface TicketCategoryChartProps {
-	tickets: Array<{ category: string }>
+const PRIORITY_LABELS: Record<string, string> = {
+	NORMAL: 'Normal',
+	URGENT: 'Urgente',
 }
 
-export default function TicketCategoryChart({ tickets }: TicketCategoryChartProps) {
-	const countsByCategory = tickets.reduce<Record<string, number>>(
-		(acc, t) => {
-			const cat = t.category || 'Sem categoria'
-			acc[cat] = (acc[cat] ?? 0) + 1
+const PRIORITY_ORDER = ['NORMAL', 'URGENT'] as const
+
+const CHART_COLORS = {
+	NORMAL: 'rgb(254, 215, 170)',
+	URGENT: 'rgb(252, 165, 165)',
+}
+
+interface TicketPriorityChartProps {
+	tickets: Array<{ priority: TicketPriority | null }>
+}
+
+export default function TicketPriorityChart({ tickets }: TicketPriorityChartProps) {
+	const counts = PRIORITY_ORDER.reduce(
+		(acc, priority) => {
+			acc[priority] = tickets.filter(
+				(t) => (t.priority ?? 'NORMAL') === priority,
+			).length
 			return acc
 		},
-		{},
+		{} as Record<string, number>,
 	)
 
-	const labels = Object.keys(countsByCategory).sort()
-	const dataValues = labels.map((label) => countsByCategory[label] ?? 0)
-	const backgroundColors = labels.map(
-		(_, i) => CATEGORY_COLORS[i % CATEGORY_COLORS.length],
-	)
+	const labels = PRIORITY_ORDER.map((p) => PRIORITY_LABELS[p] ?? p)
+	const dataValues = PRIORITY_ORDER.map((p) => counts[p] ?? 0)
+	const backgroundColors = PRIORITY_ORDER.map((p) => CHART_COLORS[p])
 
 	const chartData = {
 		labels,
@@ -76,7 +77,7 @@ export default function TicketCategoryChart({ tickets }: TicketCategoryChartProp
 		return (
 			<Card>
 				<CardHeader>
-					<CardTitle>Chamados por categoria</CardTitle>
+					<CardTitle>Chamados por prioridade</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<p className="text-muted-foreground">Nenhum chamado encontrado.</p>
@@ -88,7 +89,7 @@ export default function TicketCategoryChart({ tickets }: TicketCategoryChartProp
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Chamados por categoria</CardTitle>
+				<CardTitle>Chamados por prioridade</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div className="mx-auto h-[280px] w-full max-w-sm">

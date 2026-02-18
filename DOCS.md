@@ -1,4 +1,4 @@
-# Documentação do frontend – Sistema de Chamados
+# Documentação do frontend – Helpdesk
 
 Referência do frontend da aplicação de chamados: funcionalidades, autenticação, separação de papéis e ambientes, tecnologias e UI.
 

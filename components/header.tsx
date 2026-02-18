@@ -50,8 +50,8 @@ export default async function Header() {
         <>
             <div className="flex justify-between items-center p-4 bg-gray-100 border-b border-gray-200 px-20">
                 <div className="flex items-center gap-2">
-                    <Image src="/logo.jpg" alt="Logo" width={50} height={50} className="rounded-full" />
-                    <h1 className="text-xl font-bold">Sistema de Chamados</h1>
+                    <Image src="/logo.png" alt="Logo" width={50} height={50} className="rounded-full" />
+                    <h1 className="text-xl font-bold">Helpdesk</h1>
                 </div>
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-2 mr-8">
