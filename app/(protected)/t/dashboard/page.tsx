@@ -1,11 +1,11 @@
-import { TicketsList } from '@/components/tickets-list'
+import { UserTicketsList } from '@/components/user-tickets-list'
 
 export default async function Dashboard() {
     return (
         <div className="flex flex-col items-start w-full">
             <h1 className="text-4xl font-bold">Meus chamados</h1>
             <div className="w-full mt-8">
-                <TicketsList />
+                <UserTicketsList />
             </div>
         </div>
     )

@@ -1,8 +1,8 @@
-import { getAllTickets } from '@/app/(actions)/adminActions'
+import { getCurrentUserTickets } from '@/app/(actions)/userActions'
 import AdminTicketsListClient from '@/components/tickets-list-client'
 
-export async function AdminTicketsList() {
-	const tickets = await getAllTickets()
+export async function UserTicketsList() {
+	const tickets = await getCurrentUserTickets()
 
 	if (!tickets.success || !tickets.data) {
 		return (

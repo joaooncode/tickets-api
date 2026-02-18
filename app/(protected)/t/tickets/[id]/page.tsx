@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import { getCurrentUserTicketById } from '@/app/(actions)/userActions'
 import { TicketStatusBadge } from '@/components/status-badge'
-import { TicketCommentForm } from './ticket-comment-form'
+import { TicketCommentForm } from '@/components/ticket-comment-form'
 import type { TicketStatus } from '@/prisma/generated/prisma/client'
 import Image from 'next/image'
 

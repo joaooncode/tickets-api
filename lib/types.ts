@@ -10,6 +10,7 @@ export type TicketWithRelations = {
     description: string;
     status: TicketStatus;
     priority: TicketPriority;
+    category: string;
     user: User;
     assignedTo: User | null;
     comments: CommentWithUser[];
