@@ -20,8 +20,8 @@ const PRIORITY_LABELS: Record<string, string> = {
 const PRIORITY_ORDER = ['NORMAL', 'URGENT'] as const
 
 const CHART_COLORS = {
-	NORMAL: 'rgb(254, 215, 170)',
-	URGENT: 'rgb(252, 165, 165)',
+	NORMAL: 'rgb(249, 115, 22)',
+	URGENT: 'rgb(220, 38, 38)',
 }
 
 interface TicketPriorityChartProps {

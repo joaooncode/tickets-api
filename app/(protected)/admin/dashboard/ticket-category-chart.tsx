@@ -12,14 +12,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 const CATEGORY_COLORS = [
-	'rgb(147, 197, 253)',
-	'rgb(254, 240, 138)',
-	'rgb(134, 239, 172)',
-	'rgb(216, 180, 254)',
-	'rgb(251, 207, 232)',
-	'rgb(165, 243, 252)',
-	'rgb(254, 215, 170)',
-	'rgb(203, 213, 225)',
+	'rgb(34, 86, 197)',
+	'rgb(234, 179, 8)',
+	'rgb(29, 199, 29)',
+	'rgb(168, 85, 247)',
+	'rgb(236, 72, 153)',
+	'rgb(14, 165, 233)',
+	'rgb(249, 115, 22)',
+	'rgb(107, 114, 128)',
 ]
 
 interface TicketCategoryChartProps {

@@ -21,9 +21,9 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_ORDER = ['OPEN', 'IN_PROGRESS', 'CLOSED'] as const
 
 const CHART_COLORS = {
-    OPEN: 'rgb(147, 197, 253)',
-    IN_PROGRESS: 'rgb(254, 240, 138)',
-    CLOSED: 'rgb(134, 239, 172)',
+    OPEN: 'rgb(34, 86, 197)',
+    IN_PROGRESS: 'rgb(234, 179, 8)',
+    CLOSED: 'rgb(29, 199, 29)',
 }
 
 interface TicketStatusChartProps {
