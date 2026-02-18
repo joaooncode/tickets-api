@@ -1,10 +1,12 @@
 "use server"
 
-import { ActionResult, isCurrentUserAdmin } from "@/lib/utils"
+import { ActionResult } from "@/lib/utils"
 import { TicketStatus, User, UserRole } from "@/prisma/generated/prisma/client"
 import { userService } from "@/services/user.service"
 import { ticketService } from "@/services/ticket.service"
 import type { TicketWithRelations } from "@/lib/types"
+import { auth } from "@clerk/nextjs/server"
+import { prisma } from "@/lib/prisma"
 
 
 
@@ -102,14 +104,18 @@ export async function getAllTickets(status?: TicketStatus): Promise<
         const tickets = await ticketService.getAllTickets()
         if (tickets.isErr()) {
             if (tickets.error.type === "NOT_FOUND") {
+                console.error("[getAllTickets] Tickets não encontrados")
                 return { success: false, data: null, error: "Tickets não encontrados." }
             }
             if (tickets.error.type === "FETCH_ERROR") {
+                console.error("[getAllTickets] Erro ao buscar tickets")
                 return { success: false, data: null, error: "Erro ao buscar tickets." }
             }
             if (tickets.error.type === "UNKNOWN_ERROR") {
+                console.error("[getAllTickets] Erro desconhecido")
                 return { success: false, data: null, error: "Algo deu errado. Tente novamente em instantes." }
             }
+            console.error("[getAllTickets] Erro desconhecido")
             return { success: false, data: null, error: "Algo deu errado. Tente novamente em instantes." }
         }
 
@@ -200,3 +206,42 @@ export async function updateTicketStatus(ticketId: string, status: TicketStatus)
 
 
 
+// admin checks
+/**
+ * Checks if the user is an admin by their internal ID
+ * @param userId - The user's internal ID
+ * @returns a boolean
+ */
+export async function isUserAdmin(userId: string): Promise<boolean> {
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { role: true },
+    })
+    return user?.role === "ADMIN"
+}
+
+/**
+ * Checks if the user is an admin by their Clerk user ID
+ * @param clerkUserId - The user's Clerk user ID
+ * @returns True if the user is an admin, false otherwise
+ * @returns a boolean
+ */
+export async function isUserAdminByClerkUserId(clerkUserId: string): Promise<boolean> {
+    const user = await prisma.user.findUnique({
+        where: { clerkUserId: clerkUserId },
+        select: { role: true },
+    })
+    return user?.role === "ADMIN"
+}
+
+/**
+ * Checks if the current logged in user is an admin
+ * @returns a boolean
+ */
+export async function isCurrentUserAdmin(): Promise<boolean> {
+    const { userId } = await auth()
+    if (!userId) {
+        return false
+    }
+    return isUserAdminByClerkUserId(userId)
+}

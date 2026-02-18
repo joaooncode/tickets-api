@@ -19,11 +19,17 @@ async function getInternalUserId(clerkUserId: string): Promise<string | null> {
 
 export async function getCurrentUserRole(): Promise<UserRole | null> {
 	const { userId } = await auth()
+
 	if (!userId) return null
+	console.log("[getCurrentUserRole] User ID", userId)
+
 	const user = await prisma.user.findUnique({
 		where: { clerkUserId: userId },
 		select: { role: true },
 	})
+
+	console.log("[getCurrentUserRole] User", user)
+
 	return user?.role ?? null
 }
 

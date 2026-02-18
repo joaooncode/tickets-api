@@ -12,19 +12,31 @@ import {
 import { CalendarIcon, MessageSquareIcon } from 'lucide-react'
 import type { TicketWithRelations } from '@/lib/types'
 import { TicketStatusBadge } from '@/components/status-badge'
+import { TicketStatus } from '@/prisma/generated/prisma/browser'
 
 function formatCreatedAt(createdAt: Date): string {
 	const date = new Date(createdAt)
 	return `${date.toLocaleDateString('pt-BR')} às ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
 }
 
-export default function TicketCard({ ticket }: { ticket: TicketWithRelations }) {
+const statusToLabel = (status: TicketStatus) => {
+	switch (status) {
+		case "OPEN":
+			return "Em aberto"
+		case "IN_PROGRESS":
+			return "Em andamento"
+		case "CLOSED":
+			return "Finalizado"
+	}
+}
+
+export default function AdminTicketCard({ ticket }: { ticket: TicketWithRelations }) {
 	const router = useRouter()
 	const createdAtFormatted = formatCreatedAt(ticket.createdAt)
 	const commentsCount = ticket.comments.length
 
 	function handleClick() {
-		router.push(`/t/tickets/${ticket.id}`)
+		router.push(`/admin/tickets/${ticket.id}`)
 	}
 
 	return (
@@ -35,7 +47,7 @@ export default function TicketCard({ ticket }: { ticket: TicketWithRelations }) 
 			<CardHeader>
 				<div className="flex items-start gap-4 w-full">
 					<CardTitle>{ticket.title}</CardTitle>
-					<TicketStatusBadge status={ticket.status} />
+					<TicketStatusBadge status={statusToLabel(ticket.status)} />
 				</div>
 			</CardHeader>
 			<CardContent>

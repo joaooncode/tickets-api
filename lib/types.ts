@@ -2,6 +2,8 @@
 
 import { Comment, User, TicketStatus } from "@/prisma/generated/prisma/client";
 
+export type CommentWithUser = Comment & { user: User };
+
 export type TicketWithRelations = {
     id: string;
     title: string;
@@ -9,7 +11,7 @@ export type TicketWithRelations = {
     status: TicketStatus;
     user: User;
     assignedTo: User | null;
-    comments: Comment[];
+    comments: CommentWithUser[];
     createdAt: Date;
     updatedAt: Date;
 }

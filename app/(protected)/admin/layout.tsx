@@ -15,7 +15,6 @@ export default async function AdminLayout({
 
 	return (
 		<>
-			<h1>Admin</h1>
 			{children}
 		</>
 	)

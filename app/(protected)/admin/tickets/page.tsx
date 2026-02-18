@@ -1,7 +1,12 @@
+import { AdminTicketsList } from "@/components/admin-tickets-list";
+
 export default function AdminTicketsPage() {
     return (
-        <div>
-            <h1>Chamados</h1>
+        <div className="flex flex-col items-start w-full">
+            <h1 className="text-4xl font-bold">Todos os chamados</h1>
+            <div className="w-full mt-8">
+                <AdminTicketsList />
+            </div>
         </div>
     )
 }
