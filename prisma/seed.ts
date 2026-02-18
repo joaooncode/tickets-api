@@ -70,6 +70,7 @@ export default async function main() {
             priority: 'NORMAL' | 'URGENT'
             category: string
             assignedToId?: string
+            attachments?: string[]
         }
         comments: Array<{ author: CommentAuthor; content: string }>
     }> = [
@@ -81,6 +82,7 @@ export default async function main() {
                     priority: 'NORMAL',
                     category: 'REDE',
                     assignedToId: userMatheusAdmin.id,
+                    attachments: ['/uploads/tickets/01_acesso_negado_pasta_compartilhada.jpg'],
                 },
                 comments: [
                     { author: 'user', content: 'A pasta era \\\\servidor-antigo\\recepcao. Agora não aparece no explorador.' },
@@ -97,6 +99,7 @@ export default async function main() {
                     priority: 'URGENT',
                     category: 'SEGURANÇA',
                     assignedToId: userJoaoAdmin.id,
+                    attachments: ['/uploads/tickets/02_senha_ad_bloqueada_primeiro_acesso.jpg'],
                 },
                 comments: [
                     { author: 'user', content: 'Preciso acessar o sistema para o turno da tarde. A senha que me passaram não funciona.' },
@@ -113,6 +116,7 @@ export default async function main() {
                     priority: 'URGENT',
                     category: 'HARDWARE',
                     assignedToId: userMatheusAdmin.id,
+                    attachments: ['/uploads/tickets/03_impressora_recepcao_nao_imprime_etiquetas.jpg'],
                 },
                 comments: [
                     { author: 'user', content: 'Começou a falhar às 8h. Já reiniciei a impressora e o serviço de impressão no PC.' },
@@ -130,6 +134,7 @@ export default async function main() {
                     priority: 'NORMAL',
                     category: 'OUTRO',
                     assignedToId: userJoaoAdmin.id,
+                    attachments: [],
                 },
                 comments: [
                     { author: 'user', content: 'No sistema antigo tinha botão "Reabrir". Aqui não acho.' },
@@ -144,6 +149,7 @@ export default async function main() {
                     status: 'OPEN',
                     priority: 'NORMAL',
                     category: 'REDE',
+                    attachments: [],
                 },
                 comments: [
                     { author: 'user', content: 'Principalmente nos consultórios 5, 6 e 7. Às vezes demora para reconectar.' },
@@ -159,6 +165,7 @@ export default async function main() {
                     priority: 'NORMAL',
                     category: 'SOFTWARE',
                     assignedToId: userJoaoAdmin.id,
+                    attachments: [],
                 },
                 comments: [
                     { author: 'user', content: 'Demora mais de 30 segundos para carregar um laudo de laboratório. Paciente fica esperando.' },
@@ -175,6 +182,7 @@ export default async function main() {
                     priority: 'NORMAL',
                     category: 'REDE',
                     assignedToId: userMatheusAdmin.id,
+                    attachments: ['/uploads/tickets/07_drive_rede_nao_aparece.jpg'],
                 },
                 comments: [
                     { author: 'user', content: 'Antes era Z: apontando para o servidor antigo. Agora o Z: não aparece.' },
@@ -192,6 +200,7 @@ export default async function main() {
                     priority: 'URGENT',
                     category: 'SISTEMA',
                     assignedToId: userJoaoAdmin.id,
+                    attachments: ['/uploads/tickets/08_documentos_nao_aparecem_login_ad.jpg'],
                 },
                 comments: [
                     { author: 'user', content: 'Era no perfil antigo (PC local). Agora com AD não vejo meus documentos.' },
@@ -208,6 +217,7 @@ export default async function main() {
                     priority: 'NORMAL',
                     category: 'OUTRO',
                     assignedToId: userJoaoAdmin.id,
+                    attachments: [],
                 },
                 comments: [
                     { author: 'user', content: 'Queria ter certeza antes de desligar o servidor antigo. Arquivos de 2023 e início de 2024.' },
@@ -224,6 +234,7 @@ export default async function main() {
                     status: 'OPEN',
                     priority: 'NORMAL',
                     category: 'SOFTWARE',
+                    attachments: [],
                 },
                 comments: [
                     { author: 'user', content: 'Principalmente tomografias e ressonâncias. Leva mais de 1 minuto às vezes.' },
@@ -240,6 +251,7 @@ export default async function main() {
                     priority: 'URGENT',
                     category: 'SEGURANÇA',
                     assignedToId: userMatheusAdmin.id,
+                    attachments: ['/uploads/tickets/11_antivirus_bloqueando_programa_agendamento.jpg'],
                 },
                 comments: [
                     { author: 'user', content: 'Não conseguimos abrir o AgendaClínica. O antivírus coloca em quarentena.' },
@@ -257,6 +269,7 @@ export default async function main() {
                     priority: 'URGENT',
                     category: 'SEGURANÇA',
                     assignedToId: userJoaoAdmin.id,
+                    attachments: [],
                 },
                 comments: [
                     { author: 'user', content: 'Ela já tem usuário no AD e consegue logar no Windows, mas no sistema de gestão não abre agendamento.' },
@@ -273,6 +286,7 @@ export default async function main() {
                     priority: 'NORMAL',
                     category: 'HARDWARE',
                     assignedToId: userMatheusAdmin.id,
+                    attachments: [],
                 },
                 comments: [
                     { author: 'user', content: 'Principalmente a tecla Enter e algumas letras. Já testei em outro USB e persiste.' },
@@ -288,6 +302,7 @@ export default async function main() {
                     status: 'OPEN',
                     priority: 'NORMAL',
                     category: 'SISTEMA',
+                    attachments: ['/uploads/tickets/14_pc_administracao_reiniciando_sozinho.jpg'],
                 },
                 comments: [
                     { author: 'user', content: 'Às vezes dá tela azul antes de reiniciar. Não sei o que está causando.' },
@@ -303,6 +318,7 @@ export default async function main() {
                     priority: 'NORMAL',
                     category: 'SEGURANÇA',
                     assignedToId: userJoaoAdmin.id,
+                    attachments: [],
                 },
                 comments: [
                     { author: 'user', content: 'A mensagem diz que o anexo foi bloqueado por política de segurança. Acontece no Outlook.' },
@@ -320,6 +336,7 @@ export default async function main() {
                     priority: 'URGENT',
                     category: 'REDE',
                     assignedToId: userMatheusAdmin.id,
+                    attachments: ['/uploads/tickets/16_medico_home_office_sem_vpn.jpg'],
                 },
                 comments: [
                     { author: 'user', content: 'Dá erro de timeout ao conectar. Ele usa o cliente VPN que enviamos e a rede de casa está estável.' },
@@ -335,6 +352,7 @@ export default async function main() {
                     status: 'OPEN',
                     priority: 'NORMAL',
                     category: 'SOFTWARE',
+                    attachments: [],
                 },
                 comments: [
                     { author: 'user', content: 'O PC já está na rede e com meu usuário do AD. Só faltam os programas da clínica.' },
@@ -350,6 +368,7 @@ export default async function main() {
                     status: 'OPEN',
                     priority: 'NORMAL',
                     category: 'REDE',
+                    attachments: [],
                 },
                 comments: [
                     { author: 'user', content: 'Principalmente entre 9h e 11h. As páginas demoram para carregar e às vezes caem.' },
@@ -365,6 +384,7 @@ export default async function main() {
                     priority: 'NORMAL',
                     category: 'HARDWARE',
                     assignedToId: userMatheusAdmin.id,
+                    attachments: ['/uploads/tickets/19_segundo_monitor_nao_detecta.jpg'],
                 },
                 comments: [
                     { author: 'user', content: 'Antes funcionava. Depois de uma atualização do Windows parou de reconhecer.' },
@@ -381,6 +401,7 @@ export default async function main() {
                     priority: 'URGENT',
                     category: 'SEGURANÇA',
                     assignedToId: userJoaoAdmin.id,
+                    attachments: ['/uploads/tickets/20_sem_permissao_gravar_pasta_exames.jpg'],
                 },
                 comments: [
                     { author: 'user', content: 'A pasta é \\\\srv-arquivos01\\exames\\laboratorio. Consigo abrir mas não gravar.' },
@@ -401,6 +422,7 @@ export default async function main() {
                 priority: item.ticket.priority,
                 category: item.ticket.category,
                 assignedToId: item.ticket.assignedToId,
+                attachments: item.ticket.attachments ?? [],
             },
         })
         for (const c of item.comments) {
