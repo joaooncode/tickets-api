@@ -19,9 +19,12 @@ interface AdminTicketsFilterProps {
 	onStatusSelect: (status: TicketStatus | null) => void
 	selectedPriority: TicketPriority | null
 	onPrioritySelect: (priority: TicketPriority | null) => void
+	selectedCategory: string | null
+	onCategorySelect: (category: string | null) => void
 }
 
 const PRIORITY_ALL_VALUE = 'all'
+const CATEGORY_ALL_VALUE = 'all'
 
 export default function TicketsFilter({
 	tickets,
@@ -29,7 +32,12 @@ export default function TicketsFilter({
 	onStatusSelect,
 	selectedPriority,
 	onPrioritySelect,
+	selectedCategory,
+	onCategorySelect,
 }: AdminTicketsFilterProps) {
+	const categories = [
+		...new Set(tickets.map((t) => t.category).filter(Boolean)),
+	].sort()
 	const totalTickets = tickets.length
 	const openTickets = tickets.filter((t) => t.status === 'OPEN').length
 	const inProgressTickets = tickets.filter(
@@ -101,27 +109,56 @@ export default function TicketsFilter({
 					)
 				})}
 			</div>
-			<div className="flex flex-col gap-2 w-fit">
-				<label htmlFor="priority-select" className="text-sm font-medium">
-					Prioridade
-				</label>
-				<Select
-					value={selectedPriority ?? PRIORITY_ALL_VALUE}
-					onValueChange={(value) =>
-						onPrioritySelect(
-							value === PRIORITY_ALL_VALUE ? null : (value as TicketPriority),
-						)
-					}
-				>
-					<SelectTrigger id="priority-select" className="w-[10rem]">
-						<SelectValue placeholder="Todos" />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value={PRIORITY_ALL_VALUE}>Todos</SelectItem>
-						<SelectItem value="NORMAL">Normal</SelectItem>
-						<SelectItem value="URGENT">Urgente</SelectItem>
-					</SelectContent>
-				</Select>
+			<div className="flex flex-row gap-6 w-fit">
+				<div className="flex flex-col gap-2 w-fit">
+					<label htmlFor="priority-select" className="text-sm font-medium">
+						Prioridade
+					</label>
+					<Select
+						value={selectedPriority ?? PRIORITY_ALL_VALUE}
+						onValueChange={(value) =>
+							onPrioritySelect(
+								value === PRIORITY_ALL_VALUE
+									? null
+									: (value as TicketPriority),
+							)
+						}
+					>
+						<SelectTrigger id="priority-select" className="w-[10rem]">
+							<SelectValue placeholder="Todos" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value={PRIORITY_ALL_VALUE}>Todos</SelectItem>
+							<SelectItem value="NORMAL">Normal</SelectItem>
+							<SelectItem value="URGENT">Urgente</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
+				<div className="flex flex-col gap-2 w-fit">
+					<label htmlFor="category-select" className="text-sm font-medium">
+						Categoria
+					</label>
+					<Select
+						value={selectedCategory ?? CATEGORY_ALL_VALUE}
+						onValueChange={(value) =>
+							onCategorySelect(
+								value === CATEGORY_ALL_VALUE ? null : value,
+							)
+						}
+					>
+						<SelectTrigger id="category-select" className="w-[10rem]">
+							<SelectValue placeholder="Todos" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value={CATEGORY_ALL_VALUE}>Todos</SelectItem>
+							{categories.map((cat) => (
+								<SelectItem key={cat} value={cat}>
+									{cat}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
 			</div>
 		</div>
 	)
