@@ -10,6 +10,7 @@ export default function Error({
     error: Error & { digest?: string }
     reset: () => void
 }) {
+    console.error("[Error boundary]", error)
     return (
         <div className="flex flex-col items-center mt-20 gap-4 h-screen">
             <h1 className="text-4xl font-bold">Algo deu errado</h1>

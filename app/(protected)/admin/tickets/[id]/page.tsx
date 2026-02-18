@@ -10,24 +10,14 @@ import { Button } from '@/components/ui/button'
 import {
     ArrowLeftIcon,
     CalendarIcon,
-    CheckCircleIcon,
-    CheckIcon,
-    CircleDotIcon,
-    ClockIcon,
-    EllipsisVerticalIcon,
-    Loader2Icon,
     PaperclipIcon,
-    SettingsIcon,
-    TrashIcon,
     UserIcon,
 } from 'lucide-react'
-import { getTicketById, updateTicketStatus } from '@/app/(actions)/adminActions'
+import { getTicketById } from '@/app/(actions)/adminActions'
 import { TicketStatusBadge } from '@/components/status-badge'
 import { TicketCommentForm } from '@/components/ticket-comment-form'
 import type { TicketStatus } from '@/prisma/generated/prisma/client'
 import Image from 'next/image'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent } from '@/components/ui/dropdown-menu'
-import { toast } from 'sonner'
 import { TicketActions } from './ticket-actions'
 
 function formatDateTime(date: Date): string {

@@ -12,7 +12,7 @@ import {
 import { CalendarIcon, MessageSquareIcon } from 'lucide-react'
 import type { TicketWithRelations } from '@/lib/types'
 import { TicketStatusBadge } from '@/components/status-badge'
-import { TicketPriority, TicketStatus } from '@/prisma/generated/prisma/browser'
+import { TicketStatus } from '@/prisma/generated/prisma/browser'
 import TicketPriorityBadge from '@/components/ticket-priority-badge'
 
 function formatCreatedAt(createdAt: Date): string {

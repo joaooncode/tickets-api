@@ -1,5 +1,5 @@
 import { getAllTickets } from '@/app/(actions)/adminActions'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import TicketCategoryChart from './ticket-category-chart'
 import TicketPriorityChart from './ticket-priority-chart'
 import TicketStatusChart from './ticket-status-chart'

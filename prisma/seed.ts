@@ -3,27 +3,6 @@ import { prisma } from '@/lib/prisma'
 export default async function main() {
     console.log('Iniciando seed...')
 
-    const validCategories = [
-        'SISTEMA',
-        'HARDWARE',
-        'SOFTWARE',
-        'REDE',
-        'SEGURANÇA',
-        'OUTRO',
-    ]
-
-    const validPriorities = [
-        'NORMAL',
-        'URGENT',
-    ]
-
-    const validStatuses = [
-        'OPEN',
-        'IN_PROGRESS',
-        'CLOSED',
-    ]
-
-
     const userMatheusAdmin = await prisma.user.upsert({
         where: { clerkUserId: 'user_39JnGLH6vnxXc9y6nsk9hPLWJTv' },
         update: {},

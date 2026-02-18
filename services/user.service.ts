@@ -29,6 +29,7 @@ export const userService = {
 
             return ok(users)
         } catch (error) {
+            console.error("[getAllUsers] Erro", error)
             return err({ type: "FETCH_ERROR", message: "Failed to fetch users" })
         }
     },

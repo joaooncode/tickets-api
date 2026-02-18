@@ -1,9 +1,10 @@
 "use client"
 
+import Image from "next/image"
 import { useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { X, XIcon } from "lucide-react"
-import { getExtension, isAllowedExtension } from "@/lib/utils"
+import { XIcon } from "lucide-react"
+import { isAllowedExtension } from "@/lib/utils"
 import { toast } from "sonner"
 
 type Props = {
@@ -114,10 +115,13 @@ export function InputImageDropzone({
                 <div className="mt-4 grid grid-cols-3 gap-4">
                     {files.map((file, index) => (
                         <div key={index} className="relative">
-                            <img
+                            <Image
                                 src={URL.createObjectURL(file)}
                                 alt={file.name}
+                                width={96}
+                                height={96}
                                 className="h-24 w-full rounded object-cover"
+                                unoptimized
                             />
                             <Button
                                 type="button"

@@ -43,6 +43,7 @@ export async function getAllUsers(isActive?: boolean, userRole?: UserRole): Prom
 
         return { success: true, data: res.value, error: null }
     } catch (error) {
+        console.error("[getAllUsers] Erro", error)
         return {
             success: false,
             data: null,
@@ -80,6 +81,7 @@ export async function getUserById(userId: string): Promise<ActionResult<User>> {
 
         return { success: true, data: res.value, error: null }
     } catch (error) {
+        console.error("[getUserById] Erro", error)
         return {
             success: false,
             data: null,
@@ -161,6 +163,7 @@ export async function getTicketById(ticketId: string): Promise<ActionResult<Tick
 
         return { success: true, data: res.value, error: null }
     } catch (e) {
+        console.error("[getTicketById] Erro", e)
         return {
             success: false,
             data: null,
@@ -195,6 +198,7 @@ export async function updateTicketStatus(ticketId: string, status: TicketStatus)
 
         return { success: true, data: null, error: null }
     } catch (e) {
+        console.error("[updateTicketStatus] Erro", e)
         return {
             success: false,
             data: null,
