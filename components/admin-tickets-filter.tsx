@@ -3,7 +3,7 @@
 import type { TicketStatus } from '@/prisma/generated/prisma/client'
 import type { TicketWithRelations } from '@/lib/types'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
-import { ChartBarIcon } from 'lucide-react'
+import { ChartBarIcon, Loader2Icon, CheckIcon, ClockIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface AdminTicketsFilterProps {
@@ -25,19 +25,35 @@ export default function AdminTicketsFilter({
 	const closedTickets = tickets.filter((t) => t.status === 'CLOSED').length
 
 	const cards = [
-		{ label: 'Total', count: totalTickets, status: null as TicketStatus | null },
-		{ label: 'em aberto', count: openTickets, status: 'OPEN' as const },
 		{
-			label: 'em andamento',
+			label: 'Total',
+			count: totalTickets,
+			status: null as TicketStatus | null,
+			icon: <ChartBarIcon className="w-4 h-4 text-muted-foreground" />
+		},
+		{
+			label: 'Em aberto',
+			count: openTickets,
+			status: 'OPEN' as const,
+			icon: <ClockIcon className="w-4 h-4 text-blue-500" />
+		},
+		{
+			label: 'Em andamento',
 			count: inProgressTickets,
 			status: 'IN_PROGRESS' as const,
+			icon: <Loader2Icon className="w-4 h-4 text-yellow-500" />
 		},
-		{ label: 'resolvido', count: closedTickets, status: 'CLOSED' as const },
+		{
+			label: 'Finalizados',
+			count: closedTickets,
+			status: 'CLOSED' as const,
+			icon: <CheckIcon className="w-4 h-4 text-green-500" />
+		},
 	]
 
 	return (
 		<div className="grid grid-cols-4 gap-4 w-full">
-			{cards.map(({ label, count, status }) => {
+			{cards.map(({ label, count, status, icon }) => {
 				const isSelected = selectedStatus === status
 				return (
 					<Card
@@ -59,7 +75,7 @@ export default function AdminTicketsFilter({
 						<CardHeader>
 							<CardTitle className="flex flex-row gap-4 items-center">
 								<div>
-									<ChartBarIcon className="w-4 h-4 text-muted-foreground" />
+									{icon}
 								</div>
 								<div className="flex flex-col gap-2 items-start justify-center">
 									<span>{label}</span>
