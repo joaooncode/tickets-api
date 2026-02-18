@@ -1,6 +1,6 @@
 import { ok, err, type Result } from 'neverthrow'
 import { prisma } from '@/lib/prisma'
-import { TicketStatus } from '@/prisma/generated/prisma/client'
+import { TicketPriority, TicketStatus } from '@/prisma/generated/prisma/client'
 import type {
 	GET_ALL_TICKETS_ERROR,
 	GET_TICKET_BY_ID_ERROR,
@@ -9,7 +9,7 @@ import type {
 	UPDATE_TICKET_STATUS_ERROR,
 	CREATE_COMMENT_ERROR,
 } from '@/lib/errors'
-import type { CreateTicketData } from '@/lib/schemas'
+import type { CreateTicketServiceInput } from '@/lib/schemas'
 import type { TicketWithRelations } from '@/lib/types'
 
 export const ticketService = {
@@ -18,11 +18,12 @@ export const ticketService = {
 	 * @returns a Result<TicketWithRelations[], GetAllTicketsError>
 	 */
 	async getAllTickets(
-		status?: TicketStatus
+		status?: TicketStatus,
+		priority?: TicketPriority
 	): Promise<Result<TicketWithRelations[], GET_ALL_TICKETS_ERROR>> {
 		try {
 			const tickets = await prisma.ticket.findMany({
-				where: { status },
+				where: { status, priority },
 				include: {
 					user: true,
 					assignedTo: true,
@@ -104,12 +105,12 @@ export const ticketService = {
 	/**
 	 * Creates a new ticket
 	 * @param userId - The user's internal ID
-	 * @param CreateTicketData - The schema for the ticket
+	 * @param data - CreateTicketServiceInput (attachments como paths)
 	 * @returns a Result<Ticket, CreateTicketError>
 	 */
 	async createTicket(
 		userId: string,
-		data: CreateTicketData,
+		data: CreateTicketServiceInput,
 	): Promise<Result<string, CREATE_TICKET_ERROR>> {
 		try {
 			const ticket = await prisma.ticket.create({

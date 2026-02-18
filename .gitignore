@@ -78,6 +78,9 @@ web_modules/
 .next
 out
 
+# Uploaded ticket attachments (user content)
+public/uploads
+
 # Nuxt.js build / generate output
 .nuxt
 dist

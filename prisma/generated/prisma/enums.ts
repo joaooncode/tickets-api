@@ -24,3 +24,11 @@ export const TicketStatus = {
 } as const
 
 export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
+
+
+export const TicketPriority = {
+  NORMAL: 'NORMAL',
+  URGENT: 'URGENT'
+} as const
+
+export type TicketPriority = (typeof TicketPriority)[keyof typeof TicketPriority]

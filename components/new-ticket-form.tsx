@@ -10,7 +10,7 @@ import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
 import { createTicket } from "@/app/(actions)/userActions";
-import { Priority } from "@/lib/types";
+import { TicketPriority } from "@/prisma/generated/prisma/browser";
 import { createTicketSchema, CreateTicketData } from "@/lib/schemas";
 import { toast } from "sonner";
 import { InputImageDropzone } from "@/components/dropzone";
@@ -23,7 +23,7 @@ export function NewTicketForm() {
             category: "",
             title: "",
             description: "",
-            priority: Priority.NORMAL,
+            priority: TicketPriority.NORMAL,
             attachments: [],
         },
         mode: "onBlur",
@@ -33,8 +33,16 @@ export function NewTicketForm() {
 
     const onSubmit: SubmitHandler<CreateTicketData> = async (data) => {
         try {
-            console.log("data", data)
-            const result = await createTicket(data)
+            const formData = new FormData()
+            formData.append('category', data.category)
+            formData.append('title', data.title)
+            formData.append('description', data.description)
+            formData.append('priority', data.priority)
+            for (const file of data.attachments ?? []) {
+                formData.append('attachments', file)
+            }
+
+            const result = await createTicket(formData)
 
             if (!result.success) {
                 console.error("error creating ticket", result.error)
@@ -147,8 +155,8 @@ export function NewTicketForm() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        <SelectItem value={Priority.NORMAL}>Normal</SelectItem>
-                                        <SelectItem value={Priority.URGENT}>Urgente</SelectItem>
+                                        <SelectItem value={TicketPriority.NORMAL}>Normal</SelectItem>
+                                        <SelectItem value={TicketPriority.URGENT}>Urgente</SelectItem>
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>

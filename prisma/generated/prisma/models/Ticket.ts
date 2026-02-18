@@ -31,6 +31,8 @@ export type TicketMinAggregateOutputType = {
   title: string | null
   description: string | null
   status: $Enums.TicketStatus | null
+  priority: $Enums.TicketPriority | null
+  category: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,6 +44,8 @@ export type TicketMaxAggregateOutputType = {
   title: string | null
   description: string | null
   status: $Enums.TicketStatus | null
+  priority: $Enums.TicketPriority | null
+  category: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -53,6 +57,9 @@ export type TicketCountAggregateOutputType = {
   title: number
   description: number
   status: number
+  priority: number
+  category: number
+  attachments: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -66,6 +73,8 @@ export type TicketMinAggregateInputType = {
   title?: true
   description?: true
   status?: true
+  priority?: true
+  category?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -77,6 +86,8 @@ export type TicketMaxAggregateInputType = {
   title?: true
   description?: true
   status?: true
+  priority?: true
+  category?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -88,6 +99,9 @@ export type TicketCountAggregateInputType = {
   title?: true
   description?: true
   status?: true
+  priority?: true
+  category?: true
+  attachments?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -172,6 +186,9 @@ export type TicketGroupByOutputType = {
   title: string
   description: string
   status: $Enums.TicketStatus
+  priority: $Enums.TicketPriority
+  category: string
+  attachments: string[]
   createdAt: Date
   updatedAt: Date
   _count: TicketCountAggregateOutputType | null
@@ -204,6 +221,9 @@ export type TicketWhereInput = {
   title?: Prisma.StringFilter<"Ticket"> | string
   description?: Prisma.StringFilter<"Ticket"> | string
   status?: Prisma.EnumTicketStatusFilter<"Ticket"> | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFilter<"Ticket"> | $Enums.TicketPriority
+  category?: Prisma.StringFilter<"Ticket"> | string
+  attachments?: Prisma.StringNullableListFilter<"Ticket">
   createdAt?: Prisma.DateTimeFilter<"Ticket"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Ticket"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -218,6 +238,9 @@ export type TicketOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -235,6 +258,9 @@ export type TicketWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Ticket"> | string
   description?: Prisma.StringFilter<"Ticket"> | string
   status?: Prisma.EnumTicketStatusFilter<"Ticket"> | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFilter<"Ticket"> | $Enums.TicketPriority
+  category?: Prisma.StringFilter<"Ticket"> | string
+  attachments?: Prisma.StringNullableListFilter<"Ticket">
   createdAt?: Prisma.DateTimeFilter<"Ticket"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Ticket"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -249,6 +275,9 @@ export type TicketOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TicketCountOrderByAggregateInput
@@ -266,6 +295,9 @@ export type TicketScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
   description?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
   status?: Prisma.EnumTicketStatusWithAggregatesFilter<"Ticket"> | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityWithAggregatesFilter<"Ticket"> | $Enums.TicketPriority
+  category?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
+  attachments?: Prisma.StringNullableListFilter<"Ticket">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Ticket"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Ticket"> | Date | string
 }
@@ -275,6 +307,9 @@ export type TicketCreateInput = {
   title: string
   description: string
   status?: $Enums.TicketStatus
+  priority?: $Enums.TicketPriority
+  category?: string
+  attachments?: Prisma.TicketCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutCreatedTicketsInput
@@ -289,6 +324,9 @@ export type TicketUncheckedCreateInput = {
   title: string
   description: string
   status?: $Enums.TicketStatus
+  priority?: $Enums.TicketPriority
+  category?: string
+  attachments?: Prisma.TicketCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutTicketInput
@@ -299,6 +337,9 @@ export type TicketUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
@@ -313,6 +354,9 @@ export type TicketUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutTicketNestedInput
@@ -325,6 +369,9 @@ export type TicketCreateManyInput = {
   title: string
   description: string
   status?: $Enums.TicketStatus
+  priority?: $Enums.TicketPriority
+  category?: string
+  attachments?: Prisma.TicketCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -334,6 +381,9 @@ export type TicketUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -345,6 +395,9 @@ export type TicketUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -359,6 +412,14 @@ export type TicketOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
 export type TicketCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -366,6 +427,9 @@ export type TicketCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -377,6 +441,8 @@ export type TicketMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -388,6 +454,8 @@ export type TicketMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -481,8 +549,21 @@ export type TicketUncheckedUpdateManyWithoutAssignedToNestedInput = {
   deleteMany?: Prisma.TicketScalarWhereInput | Prisma.TicketScalarWhereInput[]
 }
 
+export type TicketCreateattachmentsInput = {
+  set: string[]
+}
+
 export type EnumTicketStatusFieldUpdateOperationsInput = {
   set?: $Enums.TicketStatus
+}
+
+export type EnumTicketPriorityFieldUpdateOperationsInput = {
+  set?: $Enums.TicketPriority
+}
+
+export type TicketUpdateattachmentsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type NullableStringFieldUpdateOperationsInput = {
@@ -508,6 +589,9 @@ export type TicketCreateWithoutUserInput = {
   title: string
   description: string
   status?: $Enums.TicketStatus
+  priority?: $Enums.TicketPriority
+  category?: string
+  attachments?: Prisma.TicketCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   assignedTo?: Prisma.UserCreateNestedOneWithoutAssignedTicketsInput
@@ -520,6 +604,9 @@ export type TicketUncheckedCreateWithoutUserInput = {
   title: string
   description: string
   status?: $Enums.TicketStatus
+  priority?: $Enums.TicketPriority
+  category?: string
+  attachments?: Prisma.TicketCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutTicketInput
@@ -540,6 +627,9 @@ export type TicketCreateWithoutAssignedToInput = {
   title: string
   description: string
   status?: $Enums.TicketStatus
+  priority?: $Enums.TicketPriority
+  category?: string
+  attachments?: Prisma.TicketCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutCreatedTicketsInput
@@ -552,6 +642,9 @@ export type TicketUncheckedCreateWithoutAssignedToInput = {
   title: string
   description: string
   status?: $Enums.TicketStatus
+  priority?: $Enums.TicketPriority
+  category?: string
+  attachments?: Prisma.TicketCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutTicketInput
@@ -593,6 +686,9 @@ export type TicketScalarWhereInput = {
   title?: Prisma.StringFilter<"Ticket"> | string
   description?: Prisma.StringFilter<"Ticket"> | string
   status?: Prisma.EnumTicketStatusFilter<"Ticket"> | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFilter<"Ticket"> | $Enums.TicketPriority
+  category?: Prisma.StringFilter<"Ticket"> | string
+  attachments?: Prisma.StringNullableListFilter<"Ticket">
   createdAt?: Prisma.DateTimeFilter<"Ticket"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Ticket"> | Date | string
 }
@@ -618,6 +714,9 @@ export type TicketCreateWithoutCommentsInput = {
   title: string
   description: string
   status?: $Enums.TicketStatus
+  priority?: $Enums.TicketPriority
+  category?: string
+  attachments?: Prisma.TicketCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutCreatedTicketsInput
@@ -631,6 +730,9 @@ export type TicketUncheckedCreateWithoutCommentsInput = {
   title: string
   description: string
   status?: $Enums.TicketStatus
+  priority?: $Enums.TicketPriority
+  category?: string
+  attachments?: Prisma.TicketCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -656,6 +758,9 @@ export type TicketUpdateWithoutCommentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
@@ -669,6 +774,9 @@ export type TicketUncheckedUpdateWithoutCommentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -679,6 +787,9 @@ export type TicketCreateManyUserInput = {
   title: string
   description: string
   status?: $Enums.TicketStatus
+  priority?: $Enums.TicketPriority
+  category?: string
+  attachments?: Prisma.TicketCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -689,6 +800,9 @@ export type TicketCreateManyAssignedToInput = {
   title: string
   description: string
   status?: $Enums.TicketStatus
+  priority?: $Enums.TicketPriority
+  category?: string
+  attachments?: Prisma.TicketCreateattachmentsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -698,6 +812,9 @@ export type TicketUpdateWithoutUserInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignedTo?: Prisma.UserUpdateOneWithoutAssignedTicketsNestedInput
@@ -710,6 +827,9 @@ export type TicketUncheckedUpdateWithoutUserInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutTicketNestedInput
@@ -721,6 +841,9 @@ export type TicketUncheckedUpdateManyWithoutUserInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -730,6 +853,9 @@ export type TicketUpdateWithoutAssignedToInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutCreatedTicketsNestedInput
@@ -742,6 +868,9 @@ export type TicketUncheckedUpdateWithoutAssignedToInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutTicketNestedInput
@@ -753,6 +882,9 @@ export type TicketUncheckedUpdateManyWithoutAssignedToInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+  priority?: Prisma.EnumTicketPriorityFieldUpdateOperationsInput | $Enums.TicketPriority
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  attachments?: Prisma.TicketUpdateattachmentsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -795,6 +927,9 @@ export type TicketSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   title?: boolean
   description?: boolean
   status?: boolean
+  priority?: boolean
+  category?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -810,6 +945,9 @@ export type TicketSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   title?: boolean
   description?: boolean
   status?: boolean
+  priority?: boolean
+  category?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -823,6 +961,9 @@ export type TicketSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   title?: boolean
   description?: boolean
   status?: boolean
+  priority?: boolean
+  category?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -836,11 +977,14 @@ export type TicketSelectScalar = {
   title?: boolean
   description?: boolean
   status?: boolean
+  priority?: boolean
+  category?: boolean
+  attachments?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TicketOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "assignedToId" | "title" | "description" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["ticket"]>
+export type TicketOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "assignedToId" | "title" | "description" | "status" | "priority" | "category" | "attachments" | "createdAt" | "updatedAt", ExtArgs["result"]["ticket"]>
 export type TicketInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   assignedTo?: boolean | Prisma.Ticket$assignedToArgs<ExtArgs>
@@ -870,6 +1014,9 @@ export type $TicketPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     title: string
     description: string
     status: $Enums.TicketStatus
+    priority: $Enums.TicketPriority
+    category: string
+    attachments: string[]
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["ticket"]>
@@ -1304,6 +1451,9 @@ export interface TicketFieldRefs {
   readonly title: Prisma.FieldRef<"Ticket", 'String'>
   readonly description: Prisma.FieldRef<"Ticket", 'String'>
   readonly status: Prisma.FieldRef<"Ticket", 'TicketStatus'>
+  readonly priority: Prisma.FieldRef<"Ticket", 'TicketPriority'>
+  readonly category: Prisma.FieldRef<"Ticket", 'String'>
+  readonly attachments: Prisma.FieldRef<"Ticket", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"Ticket", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Ticket", 'DateTime'>
 }

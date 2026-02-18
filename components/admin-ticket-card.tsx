@@ -12,7 +12,8 @@ import {
 import { CalendarIcon, MessageSquareIcon } from 'lucide-react'
 import type { TicketWithRelations } from '@/lib/types'
 import { TicketStatusBadge } from '@/components/status-badge'
-import { TicketStatus } from '@/prisma/generated/prisma/browser'
+import { TicketPriority, TicketStatus } from '@/prisma/generated/prisma/browser'
+import TicketPriorityBadge from '@/components/ticket-priority-badge'
 
 function formatCreatedAt(createdAt: Date): string {
 	const date = new Date(createdAt)
@@ -48,6 +49,7 @@ export default function AdminTicketCard({ ticket }: { ticket: TicketWithRelation
 				<div className="flex items-start gap-4 w-full">
 					<CardTitle>{ticket.title}</CardTitle>
 					<TicketStatusBadge status={statusToLabel(ticket.status)} />
+					<TicketPriorityBadge priority={ticket.priority} />
 				</div>
 			</CardHeader>
 			<CardContent>

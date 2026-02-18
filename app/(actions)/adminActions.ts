@@ -1,7 +1,7 @@
 "use server"
 
 import { ActionResult } from "@/lib/utils"
-import { TicketStatus, User, UserRole } from "@/prisma/generated/prisma/client"
+import { TicketPriority, TicketStatus, User, UserRole } from "@/prisma/generated/prisma/client"
 import { userService } from "@/services/user.service"
 import { ticketService } from "@/services/ticket.service"
 import type { TicketWithRelations } from "@/lib/types"
@@ -92,7 +92,7 @@ export async function getUserById(userId: string): Promise<ActionResult<User>> {
  * Fetches all tickets from the database (REQUIRE ADMIN ROLE)
  * @returns a Result<TicketWithRelations[], TICKET_ERRORS>
  */
-export async function getAllTickets(status?: TicketStatus): Promise<
+export async function getAllTickets(status?: TicketStatus, priority?: TicketPriority): Promise<
     ActionResult<TicketWithRelations[]>
 > {
     try {
@@ -101,7 +101,7 @@ export async function getAllTickets(status?: TicketStatus): Promise<
             return { success: false, data: null, error: "Você não tem permissão para esta ação." }
         }
 
-        const tickets = await ticketService.getAllTickets()
+        const tickets = await ticketService.getAllTickets(status, priority)
         if (tickets.isErr()) {
             if (tickets.error.type === "NOT_FOUND") {
                 console.error("[getAllTickets] Tickets não encontrados")

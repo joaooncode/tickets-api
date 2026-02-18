@@ -3,7 +3,11 @@
 import { auth } from "@clerk/nextjs/server"
 import { UserRole } from "@/prisma/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
-import { CreateTicketData } from "@/lib/schemas"
+import {
+	createTicketServiceSchema,
+	type CreateTicketServiceInput,
+} from "@/lib/schemas"
+import { saveTicketAttachments } from "@/lib/upload-ticket-attachments"
 import { ticketService } from "@/services/ticket.service"
 import { ActionResult } from "@/lib/utils"
 import type { TicketWithRelations } from "@/lib/types"
@@ -34,7 +38,7 @@ export async function getCurrentUserRole(): Promise<UserRole | null> {
 }
 
 export async function createTicket(
-	data: CreateTicketData,
+	formData: FormData,
 ): Promise<ActionResult<string>> {
 	try {
 		const { userId } = await auth()
@@ -59,10 +63,41 @@ export async function createTicket(
 			}
 		}
 
-		const res = await ticketService.createTicket(
-			internalUserId,
-			data,
-		)
+		const category = (formData.get("category") as string) ?? ""
+		const title = (formData.get("title") as string) ?? ""
+		const description = (formData.get("description") as string) ?? ""
+		const priority = (formData.get("priority") as string) ?? ""
+
+		const parsed = createTicketServiceSchema.safeParse({
+			category,
+			title,
+			description,
+			priority,
+			attachments: [],
+		})
+		if (!parsed.success) {
+			const first = parsed.error.flatten().fieldErrors
+			const msg =
+				first.category?.[0] ??
+				first.title?.[0] ??
+				first.description?.[0] ??
+				first.priority?.[0] ??
+				"Dados inválidos."
+			return { success: false, data: null, error: msg }
+		}
+
+		const fileEntries = formData.getAll("attachments").filter((v): v is File => v instanceof File && v.size > 0)
+		const { paths, error: uploadError } = await saveTicketAttachments(fileEntries)
+		if (uploadError) {
+			return { success: false, data: null, error: uploadError }
+		}
+
+		const data: CreateTicketServiceInput = {
+			...parsed.data,
+			attachments: paths,
+		}
+
+		const res = await ticketService.createTicket(internalUserId, data)
 
 		if (res.isErr()) {
 			console.error("[createTicket] Erro do service", res.error)

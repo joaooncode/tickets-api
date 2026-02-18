@@ -1,6 +1,6 @@
 // tickets
 
-import { Comment, User, TicketStatus } from "@/prisma/generated/prisma/client";
+import { Comment, User, TicketStatus, TicketPriority } from "@/prisma/generated/prisma/browser";
 
 export type CommentWithUser = Comment & { user: User };
 
@@ -9,18 +9,14 @@ export type TicketWithRelations = {
     title: string;
     description: string;
     status: TicketStatus;
+    priority: TicketPriority;
     user: User;
     assignedTo: User | null;
     comments: CommentWithUser[];
+    attachments: string[];
     createdAt: Date;
     updatedAt: Date;
 }
-
-export enum Priority {
-    NORMAL = "Normal",
-    URGENT = "Urgente"
-}
-
 
 // comments
 

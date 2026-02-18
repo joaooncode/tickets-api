@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Priority } from "./types";
+import { TicketPriority } from "@/prisma/generated/prisma/browser";
 
 export const createTicketSchema = z.object({
     category: z.string()
@@ -11,7 +11,7 @@ export const createTicketSchema = z.object({
     description: z.string()
         .min(10, "Descrição precisa ter pelo menos 10 caracteres")
         .max(1000, "Descrição precisa ter no máximo 1000 caracteres"),
-    priority: z.enum(Priority, { message: "Prioridade é obrigatória" }),
+    priority: z.enum(TicketPriority, { message: "Prioridade é obrigatória" }),
     attachments: z
         .array(z.instanceof(File))
         .max(5)
@@ -26,4 +26,15 @@ export const createTicketSchema = z.object({
 
 })
 
-export type CreateTicketData = z.infer<typeof createTicketSchema>;
+export type CreateTicketData = z.infer<typeof createTicketSchema>
+
+/** Schema para validação no servidor (campos como string; attachments como paths) */
+export const createTicketServiceSchema = z.object({
+	category: z.string().min(1).max(100),
+	title: z.string().min(1).max(100),
+	description: z.string().min(10).max(1000),
+	priority: z.enum(TicketPriority),
+	attachments: z.array(z.string()),
+})
+
+export type CreateTicketServiceInput = z.infer<typeof createTicketServiceSchema>

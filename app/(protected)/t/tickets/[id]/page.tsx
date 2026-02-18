@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import {
 	Card,
 	CardContent,
@@ -8,11 +7,17 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeftIcon, CalendarIcon, UserIcon } from 'lucide-react'
+import {
+	ArrowLeftIcon,
+	CalendarIcon,
+	PaperclipIcon,
+	UserIcon,
+} from 'lucide-react'
 import { getCurrentUserTicketById } from '@/app/(actions)/userActions'
 import { TicketStatusBadge } from '@/components/status-badge'
 import { TicketCommentForm } from './ticket-comment-form'
 import type { TicketStatus } from '@/prisma/generated/prisma/client'
+import Image from 'next/image'
 
 function formatDateTime(date: Date): string {
 	return `${date.toLocaleDateString('pt-BR')} às ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
@@ -111,6 +116,55 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
 								</div>
 							</div>
 						</CardDescription>
+					</CardContent>
+				</Card>
+			</div>
+
+			<div className="w-full max-w-2xl">
+				<h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+					<PaperclipIcon className="w-5 h-5" />
+					Anexos
+				</h3>
+				<Card>
+					<CardContent className="pt-6">
+						{!ticket.attachments?.length ? (
+							<p className="text-sm text-muted-foreground py-4">
+								Nenhum anexo.
+							</p>
+						) : (
+							<ul className="flex flex-col gap-3">
+								{ticket.attachments.map((path, index) => {
+									const filename = path.split('/').pop() ?? `Anexo ${index + 1}`
+									const isImage = /\.(jpg|jpeg|png)$/i.test(filename)
+									const label = `Abrir anexo ${index + 1}: ${filename}`
+									return (
+										<li key={path}>
+											<a
+												href={path}
+												target="_blank"
+												rel="noopener noreferrer"
+												aria-label={label}
+												className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-3 transition-colors hover:bg-muted"
+											>
+												{isImage ? (
+													// <img
+													// 	src={path}
+													// 	alt=""
+													// 	className="h-12 w-12 shrink-0 rounded object-cover"
+													// />
+													<Image src={path} alt="" width={100} height={100} />
+												) : (
+													<PaperclipIcon className="h-8 w-8 shrink-0 text-muted-foreground" />
+												)}
+												<span className="min-w-0 flex-1 truncate text-sm font-medium">
+													{filename}
+												</span>
+											</a>
+										</li>
+									)
+								})}
+							</ul>
+						)}
 					</CardContent>
 				</Card>
 			</div>

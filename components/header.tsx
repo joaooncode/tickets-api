@@ -7,7 +7,7 @@ import { UserButtonClient } from "@/components/user-button-client";
 import { Suspense } from "react";
 import { currentUser } from "@clerk/nextjs/server"
 import { getCurrentUserRole } from "@/app/(actions)/userActions"
-import { UserRole } from "@/prisma/generated/prisma/client"
+import { UserRole } from "@/prisma/generated/prisma/browser"
 
 const links = [
     {
