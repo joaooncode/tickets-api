@@ -78,9 +78,12 @@ export function NewTicketForm() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        <SelectItem value="1">Categoria 1</SelectItem>
-                                        <SelectItem value="2">Categoria 2</SelectItem>
-                                        <SelectItem value="3">Categoria 3</SelectItem>
+                                        <SelectItem value="SISTEMA">Sistema</SelectItem>
+                                        <SelectItem value="HARDWARE">Hardware</SelectItem>
+                                        <SelectItem value="SOFTWARE">Software</SelectItem>
+                                        <SelectItem value="REDE">Rede</SelectItem>
+                                        <SelectItem value="SEGURANÇA">Segurança</SelectItem>
+                                        <SelectItem value="OUTRO">Outro</SelectItem>
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
