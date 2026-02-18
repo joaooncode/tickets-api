@@ -16,8 +16,9 @@ import {
     UserIcon,
     ClockIcon,
     Loader2Icon,
-    CheckCircleIcon
+    CheckCircleIcon,
 } from "lucide-react";
+import Link from "next/link";
 import type { TicketStatus } from "@/prisma/generated/prisma/client";
 import type { TicketWithRelations } from "@/lib/types";
 import { toast } from "sonner";
@@ -56,12 +57,14 @@ export function TicketActions({
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem>
-                    <UserIcon className="mr-2 h-4 w-4" />
-                    Ver usuário
+                    <Link href={`/admin/usuarios/${ticket.user.id}`} className="flex flex-row items-center gap-2 cursor-default">
+                        <UserIcon className="mr-2 h-4 w-4" />
+                        Ver usuário
+                    </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
-                        Mudar status para
+                        Mudar status
                     </DropdownMenuSubTrigger>
                     <DropdownMenuPortal>
                         <DropdownMenuSubContent>
