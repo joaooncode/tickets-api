@@ -1,44 +1,48 @@
-# syntax=docker.io/docker/dockerfile:1
-
-# ---- Base for Build Stage ----
-FROM node:20-bullseye AS builder-base
+# ---- Builder ----
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Install dependencies for building (Debian has glibc, works with lightningcss)
 COPY package*.json ./
+COPY prisma ./prisma
 
-# Cache npm modules
 RUN --mount=type=cache,target=/app/.npm \
     npm set cache /app/.npm && \
     npm ci
 
-# Copy source code
-COPY . .
+RUN npx prisma generate
 
-# Next.js build
-# Disable telemetry if you want
-# ENV NEXT_TELEMETRY_DISABLED=1
+COPY . .
 RUN npm run build
 
-# ---- Runner Stage (Alpine) ----
+
+# ---- CLI Stage (migrations / seed) ----
+FROM node:20-alpine AS cli
+WORKDIR /app
+
+COPY package*.json ./
+COPY prisma ./prisma
+COPY . .
+
+RUN npm ci
+
+# Não define CMD aqui — será definido pelo compose
+
+
+# ---- Runner (produção) ----
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Install curl and Create non-root user
 RUN apk add --no-cache curl \
     && addgroup -S nodejs \
     && adduser -S nextjs -G nodejs -u 1001
 
 USER nextjs
 
-# Copy only the production output from builder
-COPY --from=builder-base --chown=nextjs:nodejs /app/.next/standalone ./ 
-COPY --from=builder-base --chown=nextjs:nodejs /app/.next/static ./.next/static/
-COPY --from=builder-base --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static/
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Expose port and run
 EXPOSE 3000
-
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
