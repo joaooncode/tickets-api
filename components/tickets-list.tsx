@@ -1,11 +1,13 @@
 import { getCurrentUserTickets } from '@/app/(actions)/userActions'
-import TicketCard from '@/components/ticket-card'
-import type { TicketWithRelations } from '@/lib/types'
+import { getAllTickets, isCurrentUserAdmin } from '@/app/(actions)/adminActions'
+import TicketsListClient from './tickets-list-client'
 
 export async function TicketsList() {
-	const tickets = await getCurrentUserTickets()
+	const userTickets = await getCurrentUserTickets()
+	const allTickets = await getAllTickets()
+	const isAdmin = await isCurrentUserAdmin()
 
-	if (!tickets.success || !tickets.data) {
+	if (!userTickets.success || !userTickets.data || !allTickets.success || !allTickets.data) {
 		return (
 			<div className="flex flex-col items-start w-full">
 				<div className="mt-4 text-destructive">
@@ -17,9 +19,11 @@ export async function TicketsList() {
 
 	return (
 		<div className="flex flex-col gap-4 w-full">
-			{tickets.data.map((ticket: TicketWithRelations) => (
-				<TicketCard key={ticket.id} ticket={ticket} />
-			))}
+			{isAdmin ? (
+				<TicketsListClient tickets={allTickets.data} isAdmin={true} />
+			) : (
+				<TicketsListClient tickets={userTickets.data} isAdmin={false} />
+			)}
 		</div>
 	)
 }

@@ -23,7 +23,7 @@ interface AdminTicketsFilterProps {
 
 const PRIORITY_ALL_VALUE = 'all'
 
-export default function AdminTicketsFilter({
+export default function TicketsFilter({
 	tickets,
 	selectedStatus,
 	onStatusSelect,

@@ -3,12 +3,14 @@
 import { useState } from 'react'
 import type { TicketPriority, TicketStatus } from '@/prisma/generated/prisma/browser'
 import type { TicketWithRelations } from '@/lib/types'
-import AdminTicketsFilter from '@/components/admin-tickets-filter'
-import AdminTicketCard from '@/components/admin-ticket-card'
+import TicketCard from './ticket-card'
+import TicketsFilter from './tickets-filter'
 
-export default function AdminTicketsListClient({
+export default function TicketsListClient({
+	isAdmin,
 	tickets,
 }: {
+	isAdmin: boolean
 	tickets: TicketWithRelations[]
 }) {
 	const [selectedStatus, setSelectedStatus] = useState<TicketStatus | null>(null)
@@ -27,7 +29,7 @@ export default function AdminTicketsListClient({
 
 	return (
 		<div className="flex flex-col gap-4 w-full">
-			<AdminTicketsFilter
+			<TicketsFilter
 				tickets={tickets}
 				selectedStatus={selectedStatus}
 				onStatusSelect={setSelectedStatus}
@@ -41,7 +43,7 @@ export default function AdminTicketsListClient({
 					</div>
 				) : (
 					filteredTickets.map((ticket) => (
-						<AdminTicketCard key={ticket.id} ticket={ticket} />
+						<TicketCard key={ticket.id} ticket={ticket} isAdmin={isAdmin} />
 					))
 				)}
 			</div>

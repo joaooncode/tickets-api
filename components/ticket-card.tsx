@@ -21,13 +21,17 @@ function formatCreatedAt(createdAt: Date): string {
 	return `${date.toLocaleDateString('pt-BR')} às ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
 }
 
-export default function TicketCard({ ticket }: { ticket: TicketWithRelations }) {
+export default function TicketCard({ ticket, isAdmin }: { ticket: TicketWithRelations, isAdmin: boolean }) {
 	const router = useRouter()
 	const createdAtFormatted = formatCreatedAt(ticket.createdAt)
 	const commentsCount = ticket.comments.length
 
 	function handleClick() {
-		router.push(`/t/tickets/${ticket.id}`)
+		if (isAdmin) {
+			router.push(`/admin/tickets/${ticket.id}`)
+		} else {
+			router.push(`/t/tickets/${ticket.id}`)
+		}
 	}
 
 	function mapStatusToLabel(status: TicketStatus): string {

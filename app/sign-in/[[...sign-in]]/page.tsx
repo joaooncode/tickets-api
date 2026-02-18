@@ -4,7 +4,7 @@ export default function SignInPage() {
     return (
         <div className="flex justify-center items-center h-screen">
             <SignIn
-                forceRedirectUrl={"/t/dashboard"}
+                forceRedirectUrl={"/"}
             />
         </div>
     )

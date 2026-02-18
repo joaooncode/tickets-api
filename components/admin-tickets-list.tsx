@@ -1,5 +1,5 @@
 import { getAllTickets } from '@/app/(actions)/adminActions'
-import AdminTicketsListClient from '@/components/tickets-list-client'
+import TicketsListClient from '@/components/tickets-list-client'
 
 export async function AdminTicketsList() {
 	const tickets = await getAllTickets()
@@ -14,5 +14,5 @@ export async function AdminTicketsList() {
 		)
 	}
 
-	return <AdminTicketsListClient tickets={tickets.data} />
+	return <TicketsListClient tickets={tickets.data} isAdmin={true} />
 }
