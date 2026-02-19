@@ -64,12 +64,14 @@ export async function createTicket(
 		}
 
 		const category = (formData.get("category") as string) ?? ""
+		const setor = (formData.get("setor") as string) ?? ""
 		const title = (formData.get("title") as string) ?? ""
 		const description = (formData.get("description") as string) ?? ""
 		const priority = (formData.get("priority") as string) ?? ""
 
 		const parsed = createTicketServiceSchema.safeParse({
 			category,
+			setor,
 			title,
 			description,
 			priority,
@@ -79,6 +81,7 @@ export async function createTicket(
 			const first = parsed.error.flatten().fieldErrors
 			const msg =
 				first.category?.[0] ??
+				first.setor?.[0] ??
 				first.title?.[0] ??
 				first.description?.[0] ??
 				first.priority?.[0] ??

@@ -19,7 +19,12 @@ import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
 import { createTicket } from "@/app/(actions)/userActions";
 import { TicketPriority } from "@/prisma/generated/prisma/browser";
-import { createTicketSchema, CreateTicketData, MAX_ATTACHMENT_BYTES } from "@/lib/schemas";
+import {
+    createTicketSchema,
+    CreateTicketData,
+    MAX_ATTACHMENT_BYTES,
+    TICKET_SETORES,
+} from "@/lib/schemas";
 import { toast } from "sonner";
 import { InputImageDropzone } from "@/components/dropzone";
 import { useRouter } from "next/navigation";
@@ -29,6 +34,7 @@ export function NewTicketForm() {
         resolver: zodResolver(createTicketSchema),
         defaultValues: {
             category: "",
+            setor: "OUTRO",
             title: "",
             description: "",
             priority: TicketPriority.NORMAL,
@@ -43,6 +49,7 @@ export function NewTicketForm() {
         try {
             const formData = new FormData()
             formData.append('category', data.category)
+            formData.append('setor', data.setor)
             formData.append('title', data.title)
             formData.append('description', data.description)
             formData.append('priority', data.priority)
@@ -97,6 +104,37 @@ export function NewTicketForm() {
                             </Select>
                             <FieldDescription>
                                 O título do ticket deve ser claro e conciso, entre 10 e 100 caracteres.
+                            </FieldDescription>
+                            {fieldState.invalid && (
+                                <FieldError errors={[fieldState.error]} />
+                            )}
+                        </Field>
+                    )}
+                />
+                <Controller
+                    name="setor"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor="form-rhf-input-setor" className="text-xl font-bold">
+                                Setor
+                            </FieldLabel>
+                            <Select value={field.value} onValueChange={field.onChange}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Setor" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        {TICKET_SETORES.map((s) => (
+                                            <SelectItem key={s.value} value={s.value}>
+                                                {s.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                            <FieldDescription>
+                                Setor da clínica ao qual o ticket se refere.
                             </FieldDescription>
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
