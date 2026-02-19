@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card'
 import { CalendarIcon, MessageSquareIcon } from 'lucide-react'
 import type { TicketWithRelations } from '@/lib/types'
+import { TICKET_SETORES } from '@/lib/schemas'
 import { TicketStatusBadge } from '@/components/status-badge'
 import { TicketStatus } from '@/prisma/generated/prisma/client'
 import TicketPriorityBadge from './ticket-priority-badge'
@@ -56,6 +57,9 @@ export default function TicketCard({ ticket, isAdmin }: { ticket: TicketWithRela
 					<TicketStatusBadge status={mapStatusToLabel(ticket.status)} />
 					<TicketPriorityBadge priority={ticket.priority} />
 					<Badge variant="outline" className="text-xs">{ticket.category}</Badge>
+					<Badge variant="outline" className="text-xs">
+						{TICKET_SETORES.find((s) => s.value === ticket.sector)?.label ?? ticket.sector}
+					</Badge>
 				</div>
 			</CardHeader>
 			<CardContent>

@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { TICKET_SETORES } from '@/lib/schemas'
 
 export default async function main() {
     console.log('Iniciando seed...')
@@ -391,7 +392,10 @@ export default async function main() {
             },
         ]
 
-    for (const item of ticketsWithComments) {
+    const setorValues = TICKET_SETORES.map((s) => s.value)
+    for (let i = 0; i < ticketsWithComments.length; i++) {
+        const item = ticketsWithComments[i]
+        const sector = setorValues[i % setorValues.length]
         const ticket = await prisma.ticket.create({
             data: {
                 userId: commonUser.id,
@@ -400,6 +404,7 @@ export default async function main() {
                 status: item.ticket.status,
                 priority: item.ticket.priority,
                 category: item.ticket.category,
+                sector,
                 assignedToId: item.ticket.assignedToId,
                 attachments: item.ticket.attachments ?? [],
             },

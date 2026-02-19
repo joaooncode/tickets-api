@@ -16,6 +16,8 @@ import {
 import { getTicketById } from '@/app/(actions)/adminActions'
 import { TicketStatusBadge } from '@/components/status-badge'
 import { TicketCommentForm } from '@/components/ticket-comment-form'
+import { TICKET_SETORES } from '@/lib/schemas'
+import { Badge } from '@/components/ui/badge'
 import type { TicketStatus } from '@/prisma/generated/prisma/client'
 import Image from 'next/image'
 import { TicketActions } from './ticket-actions'
@@ -74,9 +76,12 @@ export default async function AdminTicketPage({ params }: { params: Promise<{ id
                         Voltar
                     </Button>
                 </Link>
-                <div className="flex flex-row gap-4 items-center">
+                <div className="flex flex-row gap-4 items-center flex-wrap">
                     <h2 className="text-2xl font-bold">Chamado #{id}</h2>
                     <TicketStatusBadge status={statusToLabel(ticket.status)} />
+                    <Badge variant="outline" className="text-xs">
+                        {TICKET_SETORES.find((s) => s.value === ticket.sector)?.label ?? ticket.sector}
+                    </Badge>
                     <TicketActions ticket={ticket} />
                 </div>
 

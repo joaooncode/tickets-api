@@ -11,6 +11,7 @@ export type TicketWithRelations = {
     status: TicketStatus;
     priority: TicketPriority;
     category: string;
+    sector: string;
     user: User;
     assignedTo: User | null;
     comments: CommentWithUser[];

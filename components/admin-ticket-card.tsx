@@ -11,9 +11,11 @@ import {
 } from '@/components/ui/card'
 import { CalendarIcon, MessageSquareIcon } from 'lucide-react'
 import type { TicketWithRelations } from '@/lib/types'
+import { TICKET_SETORES } from '@/lib/schemas'
 import { TicketStatusBadge } from '@/components/status-badge'
 import { TicketStatus } from '@/prisma/generated/prisma/browser'
 import TicketPriorityBadge from '@/components/ticket-priority-badge'
+import { Badge } from '@/components/ui/badge'
 
 function formatCreatedAt(createdAt: Date): string {
 	const date = new Date(createdAt)
@@ -50,6 +52,9 @@ export default function AdminTicketCard({ ticket }: { ticket: TicketWithRelation
 					<CardTitle>{ticket.title}</CardTitle>
 					<TicketStatusBadge status={statusToLabel(ticket.status)} />
 					<TicketPriorityBadge priority={ticket.priority} />
+					<Badge variant="outline" className="text-xs">
+						{TICKET_SETORES.find((s) => s.value === ticket.sector)?.label ?? ticket.sector}
+					</Badge>
 				</div>
 			</CardHeader>
 			<CardContent>
