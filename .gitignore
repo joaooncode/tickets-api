@@ -128,13 +128,15 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+# prisma
+/prisma/generated/
+
 # yarn v3
 .pnp.*
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
-<<<<<<< HEAD
 !.yarn/versions
 
 # testing
@@ -166,13 +168,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-=======
-!.yarn/sdks
-!.yarn/versions
 
-# Vite logs files
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
->>>>>>> a45a39911c70ac2a6498e6997e963469fddfde86
-
-**/.generated/prisma

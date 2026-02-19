@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
-import { ptBR } from "@clerk/localizations";
+
 
 export const dynamic = "force-dynamic";
 
@@ -28,19 +27,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      localization={ptBR}
-    >
 
-      <html lang="pt-BR">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          suppressHydrationWarning
-        >
-          {children}
-          <Toaster richColors position="top-center" />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="pt-BR">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
+      >
+        {children}
+        <Toaster richColors position="top-center" />
+      </body>
+    </html>
   );
 }
