@@ -22,7 +22,10 @@ const links = [
         label: "Perfil",
         href: "/t/perfil"
     },
-
+    {
+        label: "Manual do Usuário",
+        href: "/t/docs"
+    }
 ]
 
 const adminLinks = [
@@ -37,6 +40,10 @@ const adminLinks = [
     {
         label: "Usuarios",
         href: "/admin/usuarios"
+    },
+    {
+        label: "Manual do Admin",
+        href: "/admin/docs"
     }
 ]
 
