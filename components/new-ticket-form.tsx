@@ -2,9 +2,18 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+    Field,
+    FieldContent,
+    FieldDescription,
+    FieldError,
+    FieldGroup,
+    FieldLabel,
+    FieldTitle,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
@@ -68,7 +77,7 @@ export function NewTicketForm() {
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="form-rhf-input-category">
+                            <FieldLabel htmlFor="form-rhf-input-category" className="text-xl font-bold">
                                 Categoria
                             </FieldLabel>
                             <Select value={field.value} onValueChange={field.onChange}>
@@ -100,7 +109,7 @@ export function NewTicketForm() {
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="form-rhf-input-title">
+                            <FieldLabel htmlFor="form-rhf-input-title" className="text-xl font-bold">
                                 Titulo
                             </FieldLabel>
                             <Input
@@ -124,7 +133,7 @@ export function NewTicketForm() {
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="form-rhf-input-description">
+                            <FieldLabel htmlFor="form-rhf-input-description" className="text-xl font-bold">
                                 Descrição
                             </FieldLabel>
                             <Textarea
@@ -148,20 +157,73 @@ export function NewTicketForm() {
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="form-rhf-input-priority">
+                            <FieldLabel htmlFor="form-rhf-input-priority" className="text-xl font-bold">
                                 Prioridade
                             </FieldLabel>
-                            <Select value={field.value} onValueChange={field.onChange}>
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Prioridade" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectItem value={TicketPriority.NORMAL}>Normal</SelectItem>
-                                        <SelectItem value={TicketPriority.URGENT}>Urgente</SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
+                            <RadioGroup
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                className="flex flex-col gap-3"
+                            >
+                                <FieldLabel
+                                    htmlFor="priority-urgent"
+                                    className="cursor-pointer rounded-md border p-4 has-data-[state=checked]:bg-primary/5 has-data-[state=checked]:border-primary dark:has-data-[state=checked]:bg-primary/10"
+                                >
+                                    <Field orientation="horizontal">
+                                        <FieldContent>
+                                            <FieldTitle className="text-lg font-bold">🔴 Urgente</FieldTitle>
+                                            <FieldDescription>
+                                                Chamados que impedem atendimento médico ou
+                                                colocam pacientes em risco.
+                                            </FieldDescription>
+                                            <p className="text-muted-foreground text-sm mt-2">
+                                                Marque como urgente quando houver:
+                                            </p>
+                                            <ul className="text-muted-foreground text-xs mt-1 list-disc list-inside space-y-0.5">
+                                                <li>Sistema crítico fora do ar (prontuário, agendamento, faturamento)</li>
+                                                <li>Equipamento essencial parado (recepção, impressora, internet)</li>
+                                                <li>Bloqueio total de usuário essencial (médico, recepcionista)</li>
+                                                <li>Situação que impacta pacientes agora (fila parada, atendimento interrompido)</li>
+                                            </ul>
+                                            <p className="text-muted-foreground text-sm mt-2 font-medium">
+                                                👉 Se o problema impede atendimento imediato, é URGENTE.
+                                            </p>
+                                        </FieldContent>
+                                        <RadioGroupItem
+                                            value={TicketPriority.URGENT}
+                                            id="priority-urgent"
+                                        />
+                                    </Field>
+                                </FieldLabel>
+                                <FieldLabel
+                                    htmlFor="priority-normal"
+                                    className="cursor-pointer rounded-md border p-4 has-data-[state=checked]:bg-primary/5 has-data-[state=checked]:border-primary dark:has-data-[state=checked]:bg-primary/10"
+                                >
+                                    <Field orientation="horizontal">
+                                        <FieldContent>
+                                            <FieldTitle className="text-lg font-bold">🟡 Normal</FieldTitle>
+                                            <FieldDescription>
+                                                Chamados que não bloqueiam atendimento.
+                                            </FieldDescription>
+                                            <ul className="text-muted-foreground text-xs mt-2 list-disc list-inside space-y-0.5">
+                                                <li>Instalar software, criar usuário, trocar senha (com alternativa)</li>
+                                                <li>Impressora auxiliar com problema, dúvida de uso</li>
+                                                <li>Melhorias no sistema, solicitação de novo equipamento</li>
+                                            </ul>
+                                            <p className="text-muted-foreground text-sm mt-2 font-medium">
+                                                👉 Se o atendimento continua funcionando, é NORMAL.
+                                            </p>
+                                        </FieldContent>
+                                        <RadioGroupItem
+                                            value={TicketPriority.NORMAL}
+                                            id="priority-normal"
+                                        />
+                                    </Field>
+                                </FieldLabel>
+                            </RadioGroup>
+                            {fieldState.invalid && (
+                                <FieldError errors={[fieldState.error]} />
+                            )}
                         </Field>
                     )}
                 />
@@ -170,7 +232,7 @@ export function NewTicketForm() {
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="form-rhf-input-attachments">
+                            <FieldLabel htmlFor="form-rhf-input-attachments" className="text-xl font-bold">
                                 Anexos
                             </FieldLabel>
 
