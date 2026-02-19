@@ -1,20 +1,40 @@
-## Como começar
+## 🚀 Como fazer o Deploy
 
-1. **Clone o repositório:**
+Siga os passos abaixo para configurar e executar o projeto:
 
+1. **Clone o repositório**
    ```bash
    git clone <URL_DO_REPO>
+   cd <NOME_DO_PROJETO>
    ```
 
-2. **Dê permissão de execução ao script de deploy:**
+2. **Configure as variáveis de ambiente**
 
+   Crie ou edite o arquivo `.env` na raiz do projeto com as variáveis necessárias.
+
+   > **Atenção:**  
+   > Para a configuração do banco de dados, o host deve ser o nome do serviço definido no `docker-compose` (por exemplo: `db`) e não `localhost`.
+
+   **Exemplo de configuração:**
+   ```env
+   DATABASE_URL="postgresql://usuario:senha@db:5432/nome_do_banco"
+   ```
+
+3. **Dê permissão de execução ao script de deploy**
    ```bash
    chmod +x ./scripts/deploy.sh
    ```
 
-3. **Configure o arquivo `.env` com as variáveis de ambiente necessárias:**
+4. **Execute o deploy**
+   ```bash
+   ./scripts/deploy.sh
+   ```
 
-   > **Atenção:** Para a configuração do banco de dados, o host deve ser o nome do serviço (`db`) e **não** `localhost`.
+5. **Acesse a aplicação**
+   
+   Aplicação disponível em: http://localhost:3000
+
+
 
 ---
 
