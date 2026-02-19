@@ -2,6 +2,7 @@
 
 import type { TicketPriority, TicketStatus } from '@/prisma/generated/prisma/browser'
 import type { TicketWithRelations } from '@/lib/types'
+import { TICKET_SETORES } from '@/lib/schemas'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import {
 	Select,
@@ -21,10 +22,13 @@ interface AdminTicketsFilterProps {
 	onPrioritySelect: (priority: TicketPriority | null) => void
 	selectedCategory: string | null
 	onCategorySelect: (category: string | null) => void
+	selectedSector: string | null
+	onSectorSelect: (sector: string | null) => void
 }
 
 const PRIORITY_ALL_VALUE = 'all'
 const CATEGORY_ALL_VALUE = 'all'
+const SECTOR_ALL_VALUE = 'all'
 
 export default function TicketsFilter({
 	tickets,
@@ -34,6 +38,8 @@ export default function TicketsFilter({
 	onPrioritySelect,
 	selectedCategory,
 	onCategorySelect,
+	selectedSector,
+	onSectorSelect,
 }: AdminTicketsFilterProps) {
 	const categories = [
 		...new Set(tickets.map((t) => t.category).filter(Boolean)),
@@ -109,7 +115,7 @@ export default function TicketsFilter({
 					)
 				})}
 			</div>
-			<div className="flex flex-row gap-6 w-fit">
+			<div className="flex flex-row gap-6 w-fit flex-wrap">
 				<div className="flex flex-col gap-2 w-fit">
 					<label htmlFor="priority-select" className="text-sm font-medium">
 						Prioridade
@@ -154,6 +160,31 @@ export default function TicketsFilter({
 							{categories.map((cat) => (
 								<SelectItem key={cat} value={cat}>
 									{cat}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+				<div className="flex flex-col gap-2 w-fit">
+					<label htmlFor="sector-select" className="text-sm font-medium">
+						Setor
+					</label>
+					<Select
+						value={selectedSector ?? SECTOR_ALL_VALUE}
+						onValueChange={(value) =>
+							onSectorSelect(
+								value === SECTOR_ALL_VALUE ? null : value,
+							)
+						}
+					>
+						<SelectTrigger id="sector-select" className="w-[10rem]">
+							<SelectValue placeholder="Todos" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value={SECTOR_ALL_VALUE}>Todos</SelectItem>
+							{TICKET_SETORES.map((s) => (
+								<SelectItem key={s.value} value={s.value}>
+									{s.label}
 								</SelectItem>
 							))}
 						</SelectContent>

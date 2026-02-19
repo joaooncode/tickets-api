@@ -113,6 +113,7 @@ export const ticketService = {
 		data: CreateTicketServiceInput,
 	): Promise<Result<string, CREATE_TICKET_ERROR>> {
 		try {
+			const sector = data.sector ?? (data as { setor?: string }).setor
 			const ticket = await prisma.ticket.create({
 				data: { userId, ...data },
 			})

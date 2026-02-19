@@ -57,7 +57,7 @@ export default async function main() {
             {
                 ticket: {
                     title: 'Não consigo acessar pasta compartilhada no novo servidor',
-                    description: 'Após a migração para o novo servidor de arquivos, não consigo abrir a pasta compartilhada do setor de recepção. Erro de acesso negado.',
+                    description: 'Após a migração para o novo servidor de arquivos, não consigo abrir a pasta compartilhada do sector de recepção. Erro de acesso negado.',
                     status: 'IN_PROGRESS',
                     priority: 'NORMAL',
                     category: 'REDE',

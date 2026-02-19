@@ -34,7 +34,7 @@ export function NewTicketForm() {
         resolver: zodResolver(createTicketSchema),
         defaultValues: {
             category: "",
-            setor: "OUTRO",
+            sector: "OUTRO",
             title: "",
             description: "",
             priority: TicketPriority.NORMAL,
@@ -49,7 +49,7 @@ export function NewTicketForm() {
         try {
             const formData = new FormData()
             formData.append('category', data.category)
-            formData.append('setor', data.setor)
+            formData.append('sector', data.sector)
             formData.append('title', data.title)
             formData.append('description', data.description)
             formData.append('priority', data.priority)
@@ -112,11 +112,11 @@ export function NewTicketForm() {
                     )}
                 />
                 <Controller
-                    name="setor"
+                    name="sector"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="form-rhf-input-setor" className="text-xl font-bold">
+                            <FieldLabel htmlFor="form-rhf-input-sector" className="text-xl font-bold">
                                 Setor
                             </FieldLabel>
                             <Select value={field.value} onValueChange={field.onChange}>

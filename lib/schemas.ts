@@ -36,7 +36,7 @@ export const createTicketSchema = z.object({
     category: z.string()
         .min(1, "Categoria é obrigatória")
         .max(100, "Categoria precisa ter no máximo 100 caracteres"),
-    setor: z.enum(TICKET_SETOR_VALUES, { message: "Setor é obrigatório" }),
+    sector: z.enum(TICKET_SETOR_VALUES, { message: "Setor é obrigatório" }),
     title: z.string()
         .min(1, "Título é obrigatório")
         .max(100, "Título precisa ter no máximo 100 caracteres"),
@@ -66,7 +66,7 @@ export type CreateTicketData = z.infer<typeof createTicketSchema>
 /** Schema para validação no servidor (campos como string; attachments como paths) */
 export const createTicketServiceSchema = z.object({
     category: z.string().min(1).max(100),
-    setor: z.enum(TICKET_SETOR_VALUES),
+    sector: z.enum(TICKET_SETOR_VALUES),
     title: z.string().min(1).max(100),
     description: z.string().min(10).max(1000),
     priority: z.enum(TicketPriority),

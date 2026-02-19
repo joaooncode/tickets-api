@@ -12,7 +12,7 @@ export default function TicketsOpenedThisWeekCard({ tickets }: { tickets: Ticket
     })
 
     return (
-        <Card>
+        <Card className="h-50 w-70">
             <CardHeader>
                 <CardTitle>Chamados abertos esta semana</CardTitle>
             </CardHeader>

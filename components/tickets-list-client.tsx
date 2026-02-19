@@ -17,6 +17,7 @@ export default function TicketsListClient({
 	const [selectedPriority, setSelectedPriority] =
 		useState<TicketPriority | null>(null)
 	const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+	const [selectedSector, setSelectedSector] = useState<string | null>(null)
 
 	let filteredTickets = tickets
 	if (selectedStatus !== null) {
@@ -32,6 +33,11 @@ export default function TicketsListClient({
 			(t) => t.category === selectedCategory,
 		)
 	}
+	if (selectedSector !== null) {
+		filteredTickets = filteredTickets.filter(
+			(t) => (t.sector ?? 'OUTRO') === selectedSector,
+		)
+	}
 
 	return (
 		<div className="flex flex-col gap-4 w-full">
@@ -43,6 +49,8 @@ export default function TicketsListClient({
 				onPrioritySelect={setSelectedPriority}
 				selectedCategory={selectedCategory}
 				onCategorySelect={setSelectedCategory}
+				selectedSector={selectedSector}
+				onSectorSelect={setSelectedSector}
 			/>
 			<div className="flex flex-col gap-4 mt-8">
 				{filteredTickets.length === 0 ? (
