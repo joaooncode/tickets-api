@@ -24,9 +24,10 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  createdTickets  Ticket[]  @relation("CreatedTickets")
-  assignedTickets Ticket[]  @relation("AssignedTickets")
+  createdTickets  Ticket[]        @relation("CreatedTickets")
+  assignedTickets Ticket[]        @relation("AssignedTickets")
   comments        Comment[]
+  ticketHistories TicketHistory[]
 }
 
 enum TicketStatus {
@@ -56,9 +57,10 @@ model Ticket {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user       User      @relation("CreatedTickets", fields: [userId], references: [id])
-  assignedTo User?     @relation("AssignedTickets", fields: [assignedToId], references: [id])
-  comments   Comment[]
+  user            User            @relation("CreatedTickets", fields: [userId], references: [id])
+  assignedTo      User?           @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  comments        Comment[]
+  ticketHistories TicketHistory[]
 }
 
 model Comment {
@@ -73,4 +75,28 @@ model Comment {
   // Relations
   user   User   @relation(fields: [userId], references: [id])
   ticket Ticket @relation(fields: [ticketId], references: [id])
+}
+
+enum HistoryAction {
+  STATUS_CHANGED
+  CREATED
+  CLOSED
+  REOPENED
+}
+
+model TicketHistory {
+  id String @id @default(uuid())
+
+  ticketId String
+  ticket   Ticket @relation(fields: [ticketId], references: [id])
+
+  oldValue String?
+  newValue String?
+
+  action HistoryAction
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
 }

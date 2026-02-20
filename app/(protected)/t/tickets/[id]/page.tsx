@@ -10,7 +10,9 @@ import { Button } from '@/components/ui/button'
 import {
 	ArrowLeftIcon,
 	CalendarIcon,
+	Clock,
 	PaperclipIcon,
+	User,
 	UserIcon,
 } from 'lucide-react'
 import { getCurrentUserTicketById } from '@/app/(actions)/userActions'
@@ -20,6 +22,8 @@ import { TICKET_SETORES } from '@/lib/schemas'
 import { Badge } from '@/components/ui/badge'
 import type { TicketStatus } from '@/prisma/generated/prisma/client'
 import Image from 'next/image'
+import { Timeline, TimelineItem } from '@/components/timeline'
+import { Check } from 'lucide-react'
 
 function formatDateTime(date: Date): string {
 	return `${date.toLocaleDateString('pt-BR')} às ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
@@ -215,6 +219,31 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
 						</div>
 					</CardContent>
 				</Card>
+			</div>
+			<div className="w-full max-w-2xl">
+				<Timeline>
+					<TimelineItem
+						date={new Date('2026-02-05')}
+						title="Ticket criado"
+						description="O ticket foi criado em ${ticket.createdAt}"
+						status="pending"
+
+					/>
+					<TimelineItem
+						date={new Date('2026-02-18')}
+						title="Atendimento iniciado"
+						description="O atendimento foi iniciado em 2026-02-20"
+						status="in-progress"
+						assignedTo="João"
+					/>
+					<TimelineItem
+						date={new Date('2026-02-18')}
+						title="Ticket atualizado"
+						description="Problema identificado, em análise"
+						status="in-progress"
+						assignedTo="João"
+					/>
+				</Timeline>
 			</div>
 		</div>
 	)
